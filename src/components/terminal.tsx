@@ -33,8 +33,24 @@ export function Terminal() {
   const [showPrompt, setShowPrompt] = useState(false)
   // State to track the fading effect
   const [_, setIsFading] = useState(false)
+  // State to track if we're on a mobile device
+  const [isMobile, setIsMobile] = useState(false)
   // Reference to the terminal container for scrolling
   const terminalRef = useRef<HTMLDivElement>(null)
+
+  // Check if the device is mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches)
+    }
+
+    // Check initially
+    checkMobile()
+
+    // Listen for window resize
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   // Define the sequence of lines to display
   const sequence: SequenceStep[] = [
@@ -237,15 +253,19 @@ export function Terminal() {
     }
   }, [displayedLines, currentTyping, showPrompt])
 
+  // Navigate to LinkedIn function - extracted for reuse
+  const navigateToLinkedIn = () => {
+    window.open(
+      "https://www.linkedin.com/company/drysdaleventures/about/",
+      "_blank"
+    )
+  }
+
   // Handle Enter key press to navigate to LinkedIn
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter" && showPrompt) {
-        // navigate in new tab
-        window.open(
-          "https://www.linkedin.com/company/drysdaleventures/about/",
-          "_blank"
-        )
+        navigateToLinkedIn()
       }
     }
 
@@ -254,33 +274,56 @@ export function Terminal() {
   }, [showPrompt])
 
   return (
-    <div ref={terminalRef} className="h-full overflow-y-auto px-2 py-4">
-      {/* Render all completed lines */}
-      {displayedLines.map((line, index) => (
-        <div
-          key={index}
-          className={cn(
-            "font-mono flex flex-row items-center",
-            getLineColor(index, line),
-            line.type === "empty" ? "h-4" : ""
-          )}
-        >
-          {line.content}
-          {/* Add blinking caret to the last line with content */}
-          {index === displayedLines.length - 1 &&
-            line.type === "output" &&
-            line.content === "Press ENTER to continue.." && (
-              <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
+    <div className="relative h-full">
+      <div ref={terminalRef} className="h-full overflow-y-auto px-2 py-4">
+        {/* Render all completed lines */}
+        {displayedLines.map((line, index) => (
+          <div
+            key={index}
+            className={cn(
+              "font-mono flex flex-row items-center",
+              getLineColor(index, line),
+              line.type === "empty" ? "h-4" : ""
             )}
-        </div>
-      ))}
+          >
+            {line.content}
+            {/* Add blinking caret to the last line with content */}
+            {index === displayedLines.length - 1 &&
+              line.type === "output" &&
+              line.content === "Press ENTER to continue.." && (
+                <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
+              )}
+          </div>
+        ))}
 
-      {/* Render currently typing line with cursor */}
-      {currentTyping && (
-        <div className="font-mono text-gray-800 dark:text-gray-200">
-          {currentTyping}
-          <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
-        </div>
+        {/* Render currently typing line with cursor */}
+        {currentTyping && (
+          <div className="font-mono text-gray-800 dark:text-gray-200">
+            {currentTyping}
+            <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
+          </div>
+        )}
+
+        {/* Mobile-friendly touch button */}
+        {showPrompt && isMobile && (
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={navigateToLinkedIn}
+              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            >
+              Tap to continue
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Invisible clickable overlay for desktop */}
+      {showPrompt && !isMobile && (
+        <button
+          onClick={navigateToLinkedIn}
+          className="absolute inset-0 w-full h-full cursor-pointer z-10 opacity-0"
+          aria-label="Continue to LinkedIn"
+        />
       )}
     </div>
   )
