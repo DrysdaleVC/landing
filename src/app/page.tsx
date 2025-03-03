@@ -3,7 +3,7 @@ import { Terminal } from "@/components/terminal"
 
 export default function Home() {
   return (
-    <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-black md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
+    <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
       <div
         data-id="computer-frame"
         style={{

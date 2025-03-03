@@ -225,9 +225,8 @@ export function Terminal() {
 
   // Apply light gray color to previous command sections
   const getLineColor = (index: number, line: TerminalLine) => {
-    if (line.color === "bold")
-      return "font-bold text-gray-800 dark:text-gray-200"
-    if (line.color === "light") return "text-gray-400 dark:text-gray-600"
+    if (line.color === "bold") return "font-bold text-primary"
+    if (line.color === "light") return "text-secondary"
     if (line.type === "empty") return ""
 
     // Find the indices where commands start
@@ -240,10 +239,10 @@ export function Terminal() {
 
     // If there's a command after this line and this line is before it, make it light
     if (nextCommandIndex !== undefined) {
-      return "text-gray-400 dark:text-gray-600"
+      return "text-secondary"
     }
 
-    return "text-gray-800 dark:text-gray-200"
+    return "text-primary"
   }
 
   // Auto-scroll to the bottom of the terminal
