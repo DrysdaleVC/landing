@@ -75,7 +75,7 @@ export default function Home() {
               >
                 <Terminal />
               </div>
-              <div className="flex flex-col md:flex-row justify-between w-full font-sans absolute z-10 bottom-0 gap-4 md:gap-0">
+              <div className="flex flex-col md:flex-row text-primary justify-between w-full font-sans absolute z-10 bottom-0 gap-4 md:gap-0">
                 <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
                   <span>Drysdale Invest &copy; 2025 - Up to </span>
                   <span className="tabular-nums tracking-tight">
