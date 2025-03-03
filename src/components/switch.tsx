@@ -4,14 +4,16 @@ import { useEffect, useState } from "react"
 
 export function Switch() {
   const [checked, setChecked] = useState(true)
-
-  // this is a dark mode toggle.
+  let off = new Audio("/off.mp3")
+  let on = new Audio("/on.mp3")
 
   useEffect(() => {
     if (checked) {
       document.documentElement.classList.remove("dark")
+      on.play()
     } else {
       document.documentElement.classList.add("dark")
+      off.play()
     }
   }, [checked])
 
