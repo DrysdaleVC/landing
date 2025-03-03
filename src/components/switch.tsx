@@ -3,21 +3,43 @@ import { Switch as SwitchBase } from "@base-ui-components/react/switch"
 import { useEffect, useRef, useState } from "react"
 
 export function Switch() {
-  const [checked, setChecked] = useState<boolean>(true)
+  // Don't set initial state yet - we'll do this after randomly deciding dark mode
+  const [checked, setChecked] = useState(false)
   const [initialRender, setInitialRender] = useState(true)
   const onRef = useRef<HTMLAudioElement>(null)
   const offRef = useRef<HTMLAudioElement>(null)
 
+  // This effect runs only once on mount to set up initial dark mode randomly
   useEffect(() => {
-    if (checked) {
-      document.documentElement.classList.remove("dark")
-      if (!initialRender) onRef.current?.play()
-    } else {
+    // Randomly decide if dark mode should be on
+    const darkModeOn = Math.random() >= 0.5
+
+    if (darkModeOn) {
       document.documentElement.classList.add("dark")
-      if (!initialRender) offRef.current?.play()
+    } else {
+      document.documentElement.classList.remove("dark")
     }
-    if (initialRender) setInitialRender(p => !p)
-  }, [checked])
+
+    // Set the switch state to reflect dark mode (switch is OFF when dark mode is ON)
+    setChecked(!darkModeOn)
+
+    // No longer initial render
+    setInitialRender(false)
+  }, []) // Empty dependency array ensures this only runs once on mount
+
+  // This effect handles changes to the switch after initial setup
+  useEffect(() => {
+    // Skip on first render since the mount effect handles it
+    if (!initialRender) {
+      if (!checked) {
+        document.documentElement.classList.add("dark")
+        onRef.current?.play()
+      } else {
+        document.documentElement.classList.remove("dark")
+        offRef.current?.play()
+      }
+    }
+  }, [checked, initialRender])
 
   return (
     <>
