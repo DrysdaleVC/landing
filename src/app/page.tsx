@@ -3,21 +3,21 @@ import { Terminal } from "@/components/terminal"
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-black">
+    <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-black md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
       <div
         data-id="computer-frame"
         style={{
           boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)",
         }}
-        className="w-full min-h-[100svh] md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl aspect-[4/3] md:aspect-video flex flex-col justify-center p-4 md:p-16 rounded-xl"
+        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-black/40 from-40% to-black/80 p-3 md:p-6 rounded-4xl shadow-2xl border-8 border-transparent/5 flex flex-col justify-center"
+          className="w-full h-full bg-radial from-black/20 from-10% to-black/80 p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/5 flex flex-col justify-center"
         >
           <div
             data-id="screen"
-            className="w-full h-full flex m-auto rounded-md noise brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-[#0a0a0a] relative overflow-hidden"
+            className="w-full h-full flex rounded-md noise brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-[#0a0a0a] relative overflow-hidden"
             style={{
               boxShadow:
                 "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.5)",
@@ -75,7 +75,7 @@ export default function Home() {
               >
                 <Terminal />
               </div>
-              <div className="flex flex-col md:flex-row justify-between w-full font-sans absolute z-10 -bottom-3 gap-4 md:gap-0">
+              <div className="flex flex-col md:flex-row justify-between w-full font-sans absolute z-10 bottom-0 gap-4 md:gap-0">
                 <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
                   <span>Drysdale Invest &copy; 2025 - Up to </span>
                   <span className="tabular-nums tracking-tight">
@@ -101,6 +101,21 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div className="absolute hidden md:block size-12 bottom-0 right-1/2 mb-2">
+          <img
+            src="/icon-light.svg"
+            alt="Drysdale Ventures Logo"
+            width={400}
+            height={400}
+          />
+        </div>
+        <div
+          style={{
+            boxShadow:
+              "rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px",
+          }}
+          className="absolute size-3 bg-green-400 hidden md:block rounded-full bottom-0 right-12 mb-6"
+        />
       </div>
     </main>
   )
