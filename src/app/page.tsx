@@ -6,9 +6,7 @@ export default function Home() {
     <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
       <div
         data-id="computer-frame"
-        style={{
-          boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)",
-        }}
+        style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)" }}
         className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
       >
         <div
