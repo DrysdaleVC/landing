@@ -308,7 +308,7 @@ export function Terminal() {
           <div className="mt-4 flex justify-center">
             <button
               onClick={navigateToLinkedIn}
-              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-primary rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
             >
               Tap to continue
             </button>
