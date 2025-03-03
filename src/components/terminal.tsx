@@ -82,7 +82,7 @@ export function Terminal() {
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "Module 'vertical-solutions' loaded.",
+      content: "Module 'business-solutions' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
@@ -93,7 +93,7 @@ export function Terminal() {
     // Third command
     {
       action: "type",
-      content: "> system_core -- pre-seed round",
+      content: "> system_core --pre-seed round",
       delay: TYPING_SPEED,
     },
     { action: "pause", delay: RESPONSE_DELAY },
@@ -106,7 +106,7 @@ export function Terminal() {
     { action: "pause", delay: COMMAND_DELAY },
 
     // Fourth command
-    { action: "type", content: "> halt and catch fire", delay: TYPING_SPEED },
+    { action: "type", content: "> hcf --force", delay: TYPING_SPEED },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
