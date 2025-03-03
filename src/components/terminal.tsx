@@ -297,7 +297,7 @@ export function Terminal() {
 
         {/* Render currently typing line with cursor */}
         {currentTyping && (
-          <div className="font-mono text-gray-800 dark:text-gray-200">
+          <div className="font-mono text-primary">
             {currentTyping}
             <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
           </div>
