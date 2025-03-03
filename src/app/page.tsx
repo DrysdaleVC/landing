@@ -101,14 +101,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="absolute hidden md:block size-12 bottom-0 right-1/2 mb-2">
-          <img
-            src="/icon-light.svg"
-            alt="Drysdale Ventures Logo"
-            width={400}
-            height={400}
-          />
-        </div>
         <div
           style={{
             boxShadow:
