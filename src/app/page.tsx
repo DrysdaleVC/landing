@@ -67,7 +67,7 @@ export default function Home() {
             </div>
             <div
               data-id="screen-content"
-              className="flex-1 font-mono text-xs md:text-sm relative text-gray-800 dark:text-gray-200 flex flex-col justify-between z-10"
+              className="flex-1 font-mono text-xs md:text-sm relative text-primary flex flex-col justify-between z-10"
             >
               <div
                 data-id="terminal-content"
