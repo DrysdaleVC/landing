@@ -56,20 +56,20 @@ export default function Home() {
                 src="/logo-light.svg"
                 alt="Drysdale Ventures Logo"
                 width={400}
-                height={400}
-                className="w-48 md:w-auto mr-3 pb-4 block dark:hidden"
+                height={48}
+                className="w-48 md:w-auto mr-3 block dark:hidden"
               />
               <img
                 src="/logo-dark.svg"
                 alt="Drysdale Ventures Logo"
                 width={400}
-                height={400}
-                className="w-48 md:w-auto mr-3 pb-4 hidden dark:block"
+                height={48}
+                className="w-48 md:w-auto mr-3 hidden dark:block"
               />
             </div>
             <div
               data-id="screen-content"
-              className="flex-1 font-mono text-sm md:text-base relative text-primary flex flex-col justify-between z-10"
+              className="flex-1 font-mono text-sm md:text-base mt-3 relative text-primary flex flex-col justify-between z-10"
             >
               <div
                 data-id="terminal-content"
