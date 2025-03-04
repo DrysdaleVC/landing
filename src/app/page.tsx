@@ -11,7 +11,11 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-black/20 from-10% to-black/80 p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/5 flex flex-col justify-center"
+          className="w-full h-full p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/5 flex flex-col justify-center"
+          style={{
+            boxShadow:
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset;",
+          }}
         >
           <div
             data-id="screen"
@@ -73,7 +77,7 @@ export default function Home() {
               >
                 <Terminal />
               </div>
-              <div className="flex flex-col md:flex-row text-primary justify-between w-full font-sans absolute z-10 bottom-0 gap-4 md:gap-0">
+              <div className="flex flex-col md:flex-row text-secondary justify-between w-full font-sans absolute z-10 bottom-0 gap-4 md:gap-0">
                 <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
                   <span>Drysdale Invest &copy; 2025 - Up to </span>
                   <span className="tabular-nums tracking-tight">
