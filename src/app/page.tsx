@@ -22,7 +22,7 @@ export default function Home() {
             className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-6 md:p-12 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
-                "inset 0 0 25px rgba(0, 0, 0, 0.1), 0 0 30px 15px rgba(240, 240, 232, 0.1)",
+                "inset 0 0 25px rgba(0, 0, 0, 0.01), 0 0 30px 15px rgba(240, 240, 232, 0.01)",
               borderRadius: "20px / 20px",
               transform: "perspective(1000px)",
             }}
