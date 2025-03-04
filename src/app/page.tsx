@@ -7,11 +7,11 @@ export default function Home() {
       <div
         data-id="computer-frame"
         style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)" }}
-        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
+        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[900px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full p-4 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/10 flex flex-col justify-center"
+          className="w-full h-full p-6 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/10 flex flex-col justify-center"
           style={{
             boxShadow:
               "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.70) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.58) inset",
@@ -19,7 +19,7 @@ export default function Home() {
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
+            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-6 md:p-12 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
                 "inset 0 0 25px rgba(0, 0, 0, 0.1), 0 0 30px 15px rgba(240, 240, 232, 0.2)",
