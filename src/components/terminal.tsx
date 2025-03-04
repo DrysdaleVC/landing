@@ -122,7 +122,7 @@ export function Terminal() {
     { action: "pause", delay: COMMAND_DELAY },
 
     // Fourth command
-    { action: "type", content: "> hcf --force", delay: TYPING_SPEED },
+    { action: "type", content: "> halt && catch-fire", delay: TYPING_SPEED },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
@@ -138,7 +138,11 @@ export function Terminal() {
     },
     { action: "pause", delay: MODULE_DELAY },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
-    { action: "output", content: "Press ENTER to continue..", delay: 0 },
+    {
+      action: "output",
+      content: "Press below or ENTER to continue..",
+      delay: 0,
+    },
     { action: "prompt", delay: 0 },
   ]
 
