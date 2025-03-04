@@ -40,7 +40,3 @@
 .Root {
   isolation: isolate;
 }
-
-.noise {
-  background: url("/noise.svg");
-}

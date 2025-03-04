@@ -7,7 +7,7 @@ export default function Home() {
       <div
         data-id="computer-frame"
         style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)" }}
-        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[1024px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
+        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 rounded-xl"
       >
         <div
           data-id="screen-frame"
@@ -22,7 +22,7 @@ export default function Home() {
             className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-6 md:p-12 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
-                "inset 0 0 25px rgba(0, 0, 0, 0.1), 0 0 30px 15px rgba(240, 240, 232, 0.2)",
+                "inset 0 0 25px rgba(0, 0, 0, 0.1), 0 0 30px 15px rgba(240, 240, 232, 0.1)",
               borderRadius: "20px / 20px",
               transform: "perspective(1000px)",
             }}
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
             <div
               data-id="screen-content"
-              className="flex-1 font-mono text-sm md:text-base mt-3 relative text-primary flex flex-col justify-between z-10"
+              className="flex-1 font-mono text-sm mt-3 relative text-primary flex flex-col justify-between z-10"
             >
               <div
                 data-id="terminal-content"
