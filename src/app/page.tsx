@@ -11,10 +11,10 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/5 flex flex-col justify-center"
+          className="w-full h-full p-4 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/10 flex flex-col justify-center"
           style={{
             boxShadow:
-              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset;",
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
           }}
         >
           <div
@@ -22,7 +22,7 @@ export default function Home() {
             className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
-                "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.5)",
+                "inset 0 0 25px rgba(0, 0, 0, 0.1), 0 0 30px 15px rgba(240, 240, 232, 0.2)",
               borderRadius: "20px / 20px",
               transform: "perspective(1000px)",
             }}
