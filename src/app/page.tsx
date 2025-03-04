@@ -14,7 +14,7 @@ export default function Home() {
           className="w-full h-full p-4 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/10 flex flex-col justify-center"
           style={{
             boxShadow:
-              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.70) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.58) inset",
           }}
         >
           <div
