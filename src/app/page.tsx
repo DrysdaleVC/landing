@@ -19,7 +19,7 @@ export default function Home() {
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-md noise brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-[#0a0a0a] relative overflow-hidden"
+            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
                 "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.5)",
