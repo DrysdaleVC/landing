@@ -24,11 +24,12 @@ export default function Home() {
             }}
           >
             <div
+              data-id="noise"
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
-                opacity: 0.3,
+                opacity: 0.2,
               }}
             ></div>
             {/* CRT screen curvature overlay */}
@@ -89,10 +90,15 @@ export default function Home() {
                   <span>in your pre-seed round</span>
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm">
-                  <a href="https://www.linkedin.com/company/drysdaleventures/about/">
+                  <a
+                    href="https://www.linkedin.com/company/drysdaleventures/about/"
+                    className="font-medium"
+                  >
                     LinkedIn
                   </a>
-                  <a href="https://linkedin.com">Assets</a>
+                  <a href="https://linkedin.com" className="font-medium">
+                    Assets
+                  </a>
                   <div className="flex flex-row gap-2 items-center">
                     <Switch />
                     <img

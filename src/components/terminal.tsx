@@ -138,7 +138,11 @@ export function Terminal() {
     },
     { action: "pause", delay: MODULE_DELAY },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
-    { action: "output", content: "Press ENTER to continue..", delay: 0 },
+    {
+      action: "output",
+      content: "Press ENTER to continue..",
+      delay: 0,
+    },
     { action: "prompt", delay: 0 },
   ]
 
@@ -283,12 +287,25 @@ export function Terminal() {
               getLineColor(index, line),
               line.type === "empty" ? "h-4" : ""
             )}
+            onClick={
+              line.content === "Press ENTER to continue.." && isMobile
+                ? navigateToLinkedIn
+                : undefined
+            }
+            style={
+              line.content === "Press ENTER to continue.." && isMobile
+                ? { cursor: "pointer" }
+                : {}
+            }
           >
-            {line.content}
+            {line.content === "Press ENTER to continue.." && isMobile
+              ? "Click here to continue"
+              : line.content}
             {/* Add blinking caret to the last line with content */}
             {index === displayedLines.length - 1 &&
             line.type === "output" &&
-            line.content === "Press ENTER to continue.." ? (
+            (line.content === "Press ENTER to continue.." ||
+              (isMobile && line.content === "Click here to continue")) ? (
               <Caret />
             ) : null}
           </div>
@@ -301,28 +318,7 @@ export function Terminal() {
             <Caret />
           </div>
         )}
-
-        {/* Mobile-friendly touch button */}
-        {showPrompt && isMobile && (
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={navigateToLinkedIn}
-              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-primary rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-            >
-              Tap to continue
-            </button>
-          </div>
-        )}
       </div>
-
-      {/* Invisible clickable overlay for desktop */}
-      {showPrompt && !isMobile && (
-        <button
-          onClick={navigateToLinkedIn}
-          className="absolute inset-0 w-full h-full cursor-pointer z-10 opacity-0"
-          aria-label="Continue to LinkedIn"
-        />
-      )}
     </div>
   )
 }
