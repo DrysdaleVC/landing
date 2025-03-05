@@ -24,27 +24,6 @@ export default function Home() {
               borderRadius: "20px / 20px",
             }}
           >
-            {/* CRT screen curvature overlay */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1) 100%)",
-                boxShadow: "inset 0 0 50px 10px rgba(255, 255, 255, 0.1)",
-                borderRadius: "20px / 20px",
-              }}
-            />
-
-            {/* Screen vignette effect */}
-            <div
-              data-id="screen-vignette"
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.15)",
-                borderRadius: "20px / 20px",
-              }}
-            />
-
             <div
               data-id="logo"
               className="flex items-center mb-3 md:mb-6 relative z-10"
@@ -83,10 +62,15 @@ export default function Home() {
                   <span>in your pre-seed round</span>
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm">
-                  <a href="https://www.linkedin.com/company/drysdaleventures/about/">
+                  <a
+                    href="https://www.linkedin.com/company/drysdaleventures/about/"
+                    className="font-medium"
+                  >
                     LinkedIn
                   </a>
-                  <a href="https://linkedin.com">Assets</a>
+                  <a href="https://linkedin.com" className="font-medium">
+                    Assets
+                  </a>
                   <div className="flex flex-row gap-2 items-center">
                     <Switch />
                     <img
