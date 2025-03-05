@@ -11,21 +11,20 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-background/20 from-10% to-background/80 to-80% p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
+          className="w-full h-full bg-radial from-background/20 from-10% to-background/80 to-80% p-4 md:p-6 rounded-[20px] shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
+            className="w-full h-full flex rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background border-1 border-primary dark:border-zinc-900 relative overflow-hidden"
             style={{
               boxShadow:
                 "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.15)",
-              borderRadius: "20px / 20px",
               transform: "perspective(1000px)",
             }}
           >
             <div
               data-id="noise"
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0 rounded-[20px] pointer-events-none"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
@@ -34,12 +33,11 @@ export default function Home() {
             ></div>
             {/* CRT screen curvature overlay */}
             <div
-              className="absolute inset-0 pointer-events-none"
+              className="absolute rounded-[20px] inset-0 pointer-events-none"
               style={{
                 background:
                   "radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1) 100%)",
                 boxShadow: "inset 0 0 50px 10px rgba(255, 255, 255, 0.1)",
-                borderRadius: "20px / 20px",
               }}
             />
 
