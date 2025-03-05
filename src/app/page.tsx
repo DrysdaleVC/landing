@@ -11,7 +11,7 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-background/20 from-10% to-background/60 to-80% p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
+          className="w-full h-full bg-radial from-background/20 from-10% to-background/80 to-80% p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
         >
           <div
             data-id="screen"
@@ -27,8 +27,8 @@ export default function Home() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAsUlEQVQYVzWOQQrCMBREJ0kL8hEEzSqlp4jX6DU8R8/hNbyGnkLaVRC6+Qi2iT9pO6sMf/JmFKH2jN8LIl1V/WGe7wyM2RuYpPKDAM8aHSL67AHrYD4DlqhKQCQHegBcSFBIuFCDwKNCJcd5/VkLaVF4xiQRUQs4ZW3rQniXThiTTkd9naZtk5D3CqeBIWZ43kTkv8yd+D2gk6VzEzgUkoT7uG1SZdDWaUEugG/r6MLyf1IQPAQK0mNEAAAAAElFTkSuQmCC)",
-                opacity: 0.2,
+                  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
+                opacity: 0.3,
               }}
             ></div>
             {/* CRT screen curvature overlay */}
