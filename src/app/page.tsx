@@ -11,18 +11,26 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-black/20 from-10% to-black/80 p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/5 flex flex-col justify-center"
+          className="w-full h-full bg-radial from-background/20 from-10% to-background/60 to-80% p-4 md:p-6 rounded-4xl shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-md noise brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-[#0a0a0a] relative overflow-hidden"
+            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={{
               boxShadow:
-                "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.5)",
+                "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.15)",
               borderRadius: "20px / 20px",
               transform: "perspective(1000px)",
             }}
           >
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAsUlEQVQYVzWOQQrCMBREJ0kL8hEEzSqlp4jX6DU8R8/hNbyGnkLaVRC6+Qi2iT9pO6sMf/JmFKH2jN8LIl1V/WGe7wyM2RuYpPKDAM8aHSL67AHrYD4DlqhKQCQHegBcSFBIuFCDwKNCJcd5/VkLaVF4xiQRUQs4ZW3rQniXThiTTkd9naZtk5D3CqeBIWZ43kTkv8yd+D2gk6VzEzgUkoT7uG1SZdDWaUEugG/r6MLyf1IQPAQK0mNEAAAAAElFTkSuQmCC)",
+                opacity: 0.2,
+              }}
+            ></div>
             {/* CRT screen curvature overlay */}
             <div
               className="absolute inset-0 pointer-events-none"
@@ -37,10 +45,9 @@ export default function Home() {
             {/* Screen vignette effect */}
             <div
               data-id="screen-vignette"
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0 pointer-events-none rounded-[20px]"
               style={{
-                boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.15)",
-                borderRadius: "20px / 20px",
+                boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.1)",
               }}
             />
 
