@@ -257,7 +257,7 @@ export function Terminal() {
   }, [displayedLines, currentTyping, showPrompt])
 
   // Navigate to LinkedIn function - extracted for reuse
-  const navigateToLinkedIn = () => {
+  function navigateToLinkedIn() {
     window.open(
       "https://www.linkedin.com/company/drysdaleventures/about/",
       "_blank"
@@ -304,18 +304,6 @@ export function Terminal() {
           <div className="font-mono text-primary flex flex-row items-center">
             {currentTyping}
             <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
-          </div>
-        )}
-
-        {/* Mobile-friendly touch button */}
-        {showPrompt && isMobile && (
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={navigateToLinkedIn}
-              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-primary rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-            >
-              Click here to continue...
-            </button>
           </div>
         )}
       </div>
