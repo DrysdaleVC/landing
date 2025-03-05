@@ -7,7 +7,7 @@ export default function Home() {
       <div
         data-id="computer-frame"
         style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)" }}
-        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-4 md:p-16 md:rounded-xl"
+        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-6 md:p-16 md:rounded-xl"
       >
         <div
           data-id="screen-frame"
@@ -15,7 +15,7 @@ export default function Home() {
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-4 md:p-10 bg-[#f0f0e8] dark:bg-background border-1 border-primary dark:border-zinc-900 relative overflow-hidden"
+            className="w-full h-full flex rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-6 md:p-10 bg-[#f0f0e8] dark:bg-background border-1 border-primary dark:border-zinc-900 relative overflow-hidden"
             style={{
               boxShadow:
                 "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.15)",
@@ -59,14 +59,14 @@ export default function Home() {
                 alt="Drysdale Ventures Logo"
                 width={400}
                 height={48}
-                className="w-48 md:w-auto mr-3 pb-4 block dark:hidden"
+                className="w-48 md:w-auto md:pb-4 block dark:hidden"
               />
               <img
                 src="/logo-dark.svg"
                 alt="Drysdale Ventures Logo"
                 width={400}
                 height={48}
-                className="w-48 md:w-auto mr-3 pb-4 hidden dark:block"
+                className="w-48 md:w-auto md:pb-4 hidden dark:block"
               />
             </div>
             <div
