@@ -122,7 +122,7 @@ export function Terminal() {
     { action: "pause", delay: COMMAND_DELAY },
 
     // Fourth command
-    { action: "type", content: "> halt && catch-fire", delay: TYPING_SPEED },
+    { action: "type", content: "> hcf --force", delay: TYPING_SPEED },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
@@ -138,11 +138,7 @@ export function Terminal() {
     },
     { action: "pause", delay: MODULE_DELAY },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
-    {
-      action: "output",
-      content: "Press ENTER to continue..",
-      delay: 0,
-    },
+    { action: "output", content: "Press ENTER to continue..", delay: 0 },
     { action: "prompt", delay: 0 },
   ]
 
@@ -256,7 +252,6 @@ export function Terminal() {
     }
   }, [displayedLines, currentTyping, showPrompt])
 
-  // Navigate to LinkedIn function - extracted for reuse
   function navigateToLinkedIn() {
     window.open(
       "https://www.linkedin.com/company/drysdaleventures/about/",
@@ -284,7 +279,7 @@ export function Terminal() {
           <div
             key={index}
             className={cn(
-              "font-mono flex flex-row items-center",
+              "font-mono flex flex-row",
               getLineColor(index, line),
               line.type === "empty" ? "h-4" : ""
             )}
@@ -292,19 +287,42 @@ export function Terminal() {
             {line.content}
             {/* Add blinking caret to the last line with content */}
             {index === displayedLines.length - 1 &&
-              line.type === "output" &&
-              line.content === "Press ENTER to continue.." && <Caret />}
+            line.type === "output" &&
+            line.content === "Press ENTER to continue.." ? (
+              <Caret />
+            ) : null}
           </div>
         ))}
 
         {/* Render currently typing line with cursor */}
         {currentTyping && (
-          <div className="font-mono text-primary flex flex-row items-center">
+          <div className="font-mono text-primary">
             {currentTyping}
             <Caret />
           </div>
         )}
+
+        {/* Mobile-friendly touch button */}
+        {showPrompt && isMobile && (
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={navigateToLinkedIn}
+              className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-primary rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            >
+              Tap to continue
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Invisible clickable overlay for desktop */}
+      {showPrompt && !isMobile && (
+        <button
+          onClick={navigateToLinkedIn}
+          className="absolute inset-0 w-full h-full cursor-pointer z-10 opacity-0"
+          aria-label="Continue to LinkedIn"
+        />
+      )}
     </div>
   )
 }

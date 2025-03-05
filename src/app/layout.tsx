@@ -3,7 +3,7 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "Drysdale Ventures",
-  description: "Angel Investing for Bold Founders",
+  description: "Backing software companies from day 0",
   icons: [
     {
       media: "(prefers-color-scheme: light)",
