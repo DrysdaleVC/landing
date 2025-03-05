@@ -24,7 +24,7 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 rounded-[20px] pointer-events-none"
+              className="absolute inset-0 rounded-[24px] pointer-events-none"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
