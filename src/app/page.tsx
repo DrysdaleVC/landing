@@ -11,7 +11,7 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full p-6 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-black border-transparent/10 flex flex-col justify-center"
+          className="w-full h-full p-6 md:p-10 rounded-4xl shadow-2xl border-[4px] md:border-8 border-transparent/10 flex flex-col justify-center"
           style={{
             boxShadow:
               "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.70) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.58) inset",
@@ -19,10 +19,7 @@ export default function Home() {
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-md brightness-125 opacity-100 flex-col p-6 md:p-12 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
-            style={{
-              borderRadius: "20px / 20px",
-            }}
+            className="w-full h-full flex rounded-[20px] brightness-125 opacity-100 flex-col p-6 md:p-12 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
           >
             <div
               data-id="logo"

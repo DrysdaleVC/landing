@@ -293,9 +293,7 @@ export function Terminal() {
             {/* Add blinking caret to the last line with content */}
             {index === displayedLines.length - 1 &&
               line.type === "output" &&
-              line.content === "Press ENTER to continue.." && (
-                <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
-              )}
+              line.content === "Press ENTER to continue.." && <Caret />}
           </div>
         ))}
 
@@ -303,10 +301,16 @@ export function Terminal() {
         {currentTyping && (
           <div className="font-mono text-primary flex flex-row items-center">
             {currentTyping}
-            <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink"></span>
+            <Caret />
           </div>
         )}
       </div>
     </div>
+  )
+}
+
+function Caret() {
+  return (
+    <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
   )
 }
