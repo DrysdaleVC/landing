@@ -140,7 +140,7 @@ export function Terminal() {
     { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
     {
       action: "output",
-      content: "Press below or ENTER to continue..",
+      content: "Press ENTER to continue..",
       delay: 0,
     },
     { action: "prompt", delay: 0 },
@@ -314,20 +314,11 @@ export function Terminal() {
               onClick={navigateToLinkedIn}
               className="py-2 px-6 bg-gray-200 opacity-0 dark:bg-gray-800 text-primary rounded font-mono text-sm hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
             >
-              Tap to continue
+              Click here to continue...
             </button>
           </div>
         )}
       </div>
-
-      {/* Invisible clickable overlay for desktop */}
-      {showPrompt && !isMobile && (
-        <button
-          onClick={navigateToLinkedIn}
-          className="absolute inset-0 w-full h-full cursor-pointer z-10 opacity-0"
-          aria-label="Continue to LinkedIn"
-        />
-      )}
     </div>
   )
 }
