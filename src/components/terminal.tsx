@@ -283,7 +283,7 @@ export function Terminal() {
           <div
             key={index}
             className={cn(
-              "font-mono flex flex-row",
+              "font-mono flex flex-row items-center",
               getLineColor(index, line),
               line.type === "empty" ? "h-4" : ""
             )}
@@ -298,9 +298,13 @@ export function Terminal() {
                 : {}
             }
           >
-            {line.content === "Press ENTER to continue.." && isMobile
-              ? "Click here to continue"
-              : line.content}
+            {line.content === "Press ENTER to continue.." && isMobile ? (
+              <span className="flex flex-row items-center gap-1.5">
+                Click <span className="font-bold">here</span> to continue
+              </span>
+            ) : (
+              line.content
+            )}
             {/* Add blinking caret to the last line with content */}
             {index === displayedLines.length - 1 &&
             line.type === "output" &&
@@ -313,7 +317,7 @@ export function Terminal() {
 
         {/* Render currently typing line with cursor */}
         {currentTyping && (
-          <div className="font-mono text-primary">
+          <div className="font-mono text-primary flex flex-row items-center">
             {currentTyping}
             <Caret />
           </div>
