@@ -122,7 +122,7 @@ export function Terminal() {
     { action: "pause", delay: COMMAND_DELAY },
 
     // Fourth command
-    { action: "type", content: "> hcf --force", delay: TYPING_SPEED },
+    { action: "type", content: "> halt && catch-fire", delay: TYPING_SPEED },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
