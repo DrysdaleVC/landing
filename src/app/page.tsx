@@ -24,13 +24,12 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 rounded-[24px] pointer-events-none"
+              className="absolute inset-0 rounded-[24px] pointer-events-none opacity-80 dark:opacity-20"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
-                opacity: 0.2,
               }}
-            ></div>
+            />
             {/* CRT screen curvature overlay */}
             <div
               className="absolute rounded-[20px] inset-0 pointer-events-none"
