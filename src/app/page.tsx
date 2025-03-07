@@ -13,7 +13,7 @@ export default function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full p-4 md:p-10 rounded-[20px] flex flex-col justify-center"
+          className="w-full h-full p-4 md:p-10 rounded-[20px] flex flex-col justify-center border-6 border-background/10"
           style={{
             background:
               "linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.50) 100%)",
