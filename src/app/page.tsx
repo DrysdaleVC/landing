@@ -6,12 +6,20 @@ export default function Home() {
     <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
       <div
         data-id="computer-frame"
-        style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)" }}
         className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-6 md:p-16 md:rounded-xl"
+        style={{
+          boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)",
+        }}
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full bg-radial from-background/20 from-10% to-background/80 to-80% p-4 md:p-6 rounded-[20px] shadow-2xl border-[4px] md:border-8 border-background/20 flex flex-col justify-center"
+          className="w-full h-full p-4 md:p-12 rounded-[20px] flex flex-col justify-center"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.50) 100%)",
+            boxShadow:
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
+          }}
         >
           <div
             data-id="screen"
@@ -45,13 +53,13 @@ export default function Home() {
             />
 
             {/* Screen vignette effect */}
-            {/* <div
+            <div
               data-id="screen-vignette"
               className="absolute inset-0 pointer-events-none rounded-[20px]"
               style={{
                 boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.1)",
               }}
-            /> */}
+            />
 
             <div
               data-id="logo"
