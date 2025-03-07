@@ -16,15 +16,17 @@ export default function Home() {
           <div
             data-id="screen"
             className="w-full h-full flex rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-6 md:p-10 bg-[#f0f0e8] dark:bg-background border-1 border-primary dark:border-zinc-900 relative overflow-hidden"
-            style={{
-              boxShadow:
-                "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.15)",
-              transform: "perspective(1000px)",
-            }}
+            style={
+              {
+                // boxShadow:
+                //   "inset 0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px 5px rgba(240, 240, 232, 0.15)",
+                // transform: "perspective(1000px)",
+              }
+            }
           >
             <div
               data-id="noise"
-              className="absolute inset-0 rounded-[24px] pointer-events-none opacity-80 dark:opacity-20"
+              className="absolute inset-0 rounded-[24px] pointer-events-none opacity-100 dark:opacity-20"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
@@ -33,21 +35,23 @@ export default function Home() {
             {/* CRT screen curvature overlay */}
             <div
               className="absolute rounded-[20px] inset-0 pointer-events-none"
-              style={{
-                background:
-                  "radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1) 100%)",
-                boxShadow: "inset 0 0 50px 10px rgba(255, 255, 255, 0.1)",
-              }}
+              style={
+                {
+                  // background:
+                  //   "radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1) 100%)",
+                  // boxShadow: "inset 0 0 50px 10px rgba(255, 255, 255, 0.1)",
+                }
+              }
             />
 
             {/* Screen vignette effect */}
-            <div
+            {/* <div
               data-id="screen-vignette"
               className="absolute inset-0 pointer-events-none rounded-[20px]"
               style={{
                 boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.1)",
               }}
-            />
+            /> */}
 
             <div
               data-id="logo"
