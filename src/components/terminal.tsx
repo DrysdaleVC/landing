@@ -102,7 +102,7 @@ export function Terminal() {
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
-    { action: "output", content: "All AI capabilities integrated.", delay: 0 },
+    { action: "output", content: "AI capabilities integrated.", delay: 0 },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line after modules loaded
     { action: "pause", delay: COMMAND_DELAY },
 
