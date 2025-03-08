@@ -92,11 +92,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col md:flex-row text-primary justify-between w-full px-1.5 font-sans absolute z-10 -bottom-2 gap-4 md:gap-0">
                 <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
-                  <span>Drysdale Invest &copy; 2025 - Up to </span>
-                  <span className="tabular-nums tracking-tight">
-                    &euro;500,000
-                  </span>
-                  <span>in your pre-seed round</span>
+                  <span>Drysdale Invest &copy; 2025 - We back software companies from day 0</span>
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm">
                   <a
