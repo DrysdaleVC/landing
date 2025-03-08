@@ -101,8 +101,8 @@ export default function Home() {
                   >
                     LinkedIn
                   </a>
-                  <a href="https://linkedin.com" className="font-medium">
-                    Assets
+                  <a href="https://drive.google.com/drive/folders/1ew3o4I_EQuCvN0lZD7uZ7Z2GZUhAqHvn?usp=sharing" className="font-medium">
+                    Media Kit
                   </a>
                   <div className="flex flex-row gap-2 items-center">
                     <Switch />
