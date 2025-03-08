@@ -57,7 +57,7 @@ export function Terminal() {
     // First command
     {
       action: "type",
-      content: "> auth --token drysdale-ventures",
+      content: "> auth --drysdale-ventures",
       delay: TYPING_SPEED,
     },
     { action: "pause", delay: RESPONSE_DELAY },
@@ -80,25 +80,25 @@ export function Terminal() {
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "Module 'fintech-and-defi' loaded.",
+      content: "'fintech-and-defi' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "Module 'infra-and-tooling' loaded.",
+      content: "'infra-and-tooling' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "Module 'consumer-and-gaming' loaded.",
+      content: "'consumer-and-gaming' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "Module 'business-solutions' loaded.",
+      content: "'business-solutions' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
