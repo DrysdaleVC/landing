@@ -23,7 +23,7 @@ export default function Home() {
         >
           <div
             data-id="screen"
-            className="w-full h-full flex rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-6 md:p-10 bg-[#f0f0e8] dark:bg-background border-1 border-primary dark:border-zinc-900 relative overflow-hidden"
+            className="w-full h-full flex rounded-[16px] md:rounded-[24px] brightness-125 shadow-lg opacity-100 flex-col p-6 md:p-10 bg-[#f0f0e8] dark:bg-background relative overflow-hidden"
             style={
               {
                 // boxShadow:
@@ -34,7 +34,7 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 rounded-[24px] pointer-events-none opacity-40 invert dark:invert-0 dark:opacity-20"
+              className="absolute inset-0 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-40 invert dark:invert-0 dark:opacity-20"
               style={{
                 background:
                   "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
