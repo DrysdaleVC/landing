@@ -18,7 +18,7 @@ export default function Home() {
             background:
               "linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.50) 100%)",
             boxShadow:
-              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0, 0, 0, 0.50) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(200, 200, 200, 0.10) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
           }}
         >
           <div
