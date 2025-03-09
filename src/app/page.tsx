@@ -18,7 +18,7 @@ export default function Home() {
             background:
               "linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.50) 100%)",
             boxShadow:
-              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(200, 200, 200, 0.10) inset, 0px 0px 64px 48px rgba(0, 0, 0, 0.48) inset",
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 0px 16px 12px rgba(0,0,0, 0.90) inset, 0px 0px 64px 48px rgba(100,100,100, 0.2) inset",
           }}
         >
           <div
@@ -92,7 +92,10 @@ export default function Home() {
               </div>
               <div className="flex flex-col md:flex-row text-primary justify-between w-full px-1.5 font-sans absolute z-10 -bottom-2 gap-4 md:gap-0">
                 <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
-                  <span>Drysdale Invest &copy; 2025 - Backing software companies from day 0</span>
+                  <span>
+                    Drysdale Invest &copy; 2025 - Backing software companies
+                    from day 0
+                  </span>
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm">
                   <a
@@ -101,7 +104,10 @@ export default function Home() {
                   >
                     LinkedIn
                   </a>
-                  <a href="https://drive.google.com/drive/folders/1ew3o4I_EQuCvN0lZD7uZ7Z2GZUhAqHvn?usp=sharing" className="font-medium">
+                  <a
+                    href="https://drive.google.com/drive/folders/1ew3o4I_EQuCvN0lZD7uZ7Z2GZUhAqHvn?usp=sharing"
+                    className="font-medium"
+                  >
                     Media Kit
                   </a>
                   <div className="flex flex-row gap-2 items-center">
