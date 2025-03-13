@@ -34,11 +34,10 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 bg-repeat z-10 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-30 invert dark:invert-0 dark:opacity-20"
+              className="absolute inset-0 bg-repeat z-10 bg-[6px] dark:bg-[2px] rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-50 invert dark:invert-0 dark:opacity-20 will-change-opacity"
               style={{
                 backgroundImage: "url(/texture.png)",
-                backgroundSize: "2px 2px",
-                willChange: "contents",
+                transform: "translateZ(0)",
               }}
             />
             {/* CRT screen curvature overlay */}

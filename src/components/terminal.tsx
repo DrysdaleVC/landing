@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 // Define the structure of a terminal line
 type TerminalLine = {
@@ -23,6 +23,51 @@ const TYPING_SPEED = 50 // ms per character
 const RESPONSE_DELAY = 500 // ms before computer responds
 const MODULE_DELAY = 300 // ms delay between module loading messages
 const COMMAND_DELAY = 1000 // ms delay before starting a new command
+
+// Memoized line component to reduce re-renders
+const TerminalLineComponent = React.memo(
+  ({
+    line,
+    index,
+    isLastLine,
+    showCaret,
+    isMobile,
+    onClick,
+    style,
+    lineColor,
+  }: {
+    line: TerminalLine
+    index: number
+    isLastLine: boolean
+    showCaret: boolean
+    isMobile: boolean
+    onClick?: () => void
+    style?: React.CSSProperties
+    lineColor: string
+  }) => {
+    return (
+      <div
+        className={cn(
+          "font-mono flex flex-row items-center",
+          lineColor,
+          line.type === "empty" ? "h-4" : ""
+        )}
+        onClick={onClick}
+        style={style}
+      >
+        {line.content === "Press ENTER to continue.." && isMobile ? (
+          <span className="flex flex-row items-center gap-1.5">
+            Click <span className="font-bold">here</span> to continue
+          </span>
+        ) : (
+          line.content
+        )}
+        {isLastLine && showCaret ? <Caret /> : null}
+      </div>
+    )
+  }
+)
+TerminalLineComponent.displayName = "TerminalLineComponent"
 
 export function Terminal() {
   // State to track the displayed lines
@@ -249,10 +294,15 @@ export function Terminal() {
     return "text-primary"
   }
 
-  // Auto-scroll to the bottom of the terminal
+  // Auto-scroll to the bottom of the terminal - optimize with a more performant approach
   useEffect(() => {
     if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+      // Use requestAnimationFrame to optimize scrolling performance
+      requestAnimationFrame(() => {
+        if (terminalRef.current) {
+          terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+        }
+      })
     }
   }, [displayedLines, currentTyping, showPrompt])
 
@@ -277,16 +327,30 @@ export function Terminal() {
 
   return (
     <div className="relative h-full will-change-contents">
-      <div ref={terminalRef} className="h-full overflow-y-auto px-2 py-4">
+      <div
+        ref={terminalRef}
+        className="h-full overflow-y-auto px-2 py-4"
+        style={{
+          contain: "content", // Add content containment for better performance
+          transform: "translateZ(0)", // Force hardware acceleration
+          willChange: "scroll-position", // Hint to browser about upcoming scroll changes
+        }}
+      >
         {/* Render all completed lines */}
         {displayedLines.map((line, index) => (
-          <div
+          <TerminalLineComponent
             key={index}
-            className={cn(
-              "font-mono flex flex-row items-center",
-              getLineColor(index, line),
-              line.type === "empty" ? "h-4" : ""
-            )}
+            line={line}
+            index={index}
+            isLastLine={
+              index === displayedLines.length - 1 &&
+              line.type === "output" &&
+              (line.content === "Press ENTER to continue.." ||
+                (isMobile && line.content === "Click here to continue"))
+            }
+            showCaret={true}
+            isMobile={isMobile}
+            lineColor={getLineColor(index, line)}
             onClick={
               line.content === "Press ENTER to continue.." && isMobile
                 ? navigateToLinkedIn
@@ -295,24 +359,9 @@ export function Terminal() {
             style={
               line.content === "Press ENTER to continue.." && isMobile
                 ? { cursor: "pointer" }
-                : {}
+                : undefined
             }
-          >
-            {line.content === "Press ENTER to continue.." && isMobile ? (
-              <span className="flex flex-row items-center gap-1.5">
-                Click <span className="font-bold">here</span> to continue
-              </span>
-            ) : (
-              line.content
-            )}
-            {/* Add blinking caret to the last line with content */}
-            {index === displayedLines.length - 1 &&
-            line.type === "output" &&
-            (line.content === "Press ENTER to continue.." ||
-              (isMobile && line.content === "Click here to continue")) ? (
-              <Caret />
-            ) : null}
-          </div>
+          />
         ))}
 
         {/* Render currently typing line with cursor */}
