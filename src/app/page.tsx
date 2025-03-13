@@ -38,6 +38,7 @@ export default function Home() {
               style={{
                 backgroundImage: "url(/texture.png)",
                 backgroundSize: "2px 2px",
+                willChange: "contents",
               }}
             />
             {/* CRT screen curvature overlay */}

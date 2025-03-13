@@ -276,7 +276,7 @@ export function Terminal() {
   }, [showPrompt])
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full will-change-contents">
       <div ref={terminalRef} className="h-full overflow-y-auto px-2 py-4">
         {/* Render all completed lines */}
         {displayedLines.map((line, index) => (
