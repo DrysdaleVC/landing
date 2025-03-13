@@ -34,7 +34,7 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 bg-repeat z-10 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-40 invert dark:invert-0 dark:opacity-20"
+              className="absolute inset-0 bg-repeat z-10 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-30 invert dark:invert-0 dark:opacity-20"
               style={{
                 backgroundImage: "url(/texture.png)",
                 backgroundSize: "2px 2px",
