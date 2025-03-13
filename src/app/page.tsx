@@ -34,14 +34,14 @@ export default function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-30 invert dark:invert-0 dark:opacity-20"
+              className="absolute inset-0 bg-repeat z-10 rounded-[16px] md:rounded-[24px] pointer-events-none opacity-40 invert dark:invert-0 dark:opacity-20"
               style={{
-                background:
-                  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2r9//38gYGAEESAAEGAAasgJOgzOKCoAAAAASUVORK5CYII=)",
+                backgroundImage: "url(/texture.png)",
+                backgroundSize: "2px 2px",
               }}
             />
             {/* CRT screen curvature overlay */}
-            <div
+            {/* <div
               className="absolute rounded-[20px] inset-0 pointer-events-none"
               style={
                 {
@@ -50,16 +50,16 @@ export default function Home() {
                   // boxShadow: "inset 0 0 50px 10px rgba(255, 255, 255, 0.1)",
                 }
               }
-            />
+            /> */}
 
             {/* Screen vignette effect */}
-            <div
+            {/* <div
               data-id="screen-vignette"
               className="absolute inset-0 pointer-events-none rounded-[20px]"
               style={{
                 boxShadow: "inset 0 0 100px 5px rgba(0, 0, 0, 0.1)",
               }}
-            />
+            /> */}
 
             <div
               data-id="logo"
