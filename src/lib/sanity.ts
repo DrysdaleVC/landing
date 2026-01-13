@@ -15,6 +15,12 @@ const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
 const isSanityConfigured = !!projectId;
 
+console.log({
+  projectId,
+  dataset,
+  isSanityConfigured,
+});
+
 // Create client only if configured
 export const client: SanityClient | null = isSanityConfigured
   ? createClient({
