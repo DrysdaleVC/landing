@@ -1,59 +1,95 @@
-"use client"
+"use client";
 
-import { urlFor, type TeamMember } from "@/lib/sanity"
+import { urlFor, type TeamMember } from "@/lib/sanity";
 
 type TeamSectionProps = {
-  team: TeamMember[]
-}
+  team: TeamMember[];
+};
 
 export function TeamSection({ team }: TeamSectionProps) {
+  // Debug: log team data
+  console.log("Team data:", team);
+
   return (
-    <section className="min-h-full w-full flex flex-col py-6">
-      <h2 className="font-mono text-xs md:text-sm text-primary mb-6">
-        <span className="text-secondary">&gt;</span> team --list-members
+    <section className="h-full w-[80%] flex flex-col py-2">
+      <h2 className="font-mono text-xs md:text-sm text-primary mb-2 flex-shrink-0">
+        <span className="text-secondary">&gt;</span> system_core --team <br />
+        <span className="text-secondary">Loading team...</span>
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {team.map((member) => (
-          <a
-            key={member._id}
-            href={member.linkedInUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative aspect-square bg-primary/5 dark:bg-white/5 rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
-          >
-            {/* Photo */}
-            <img
-              src={urlFor(member.photo).width(400).height(400).url()}
-              alt={member.name}
-              className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
-            />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#e6e6e6]/20 dark:bg-[#e6e6e6]/20 border border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+        {team.map((member) => {
+          const hasLightImage = member.photoLight?.asset?._ref;
+          const hasDarkImage = member.photoDark?.asset?._ref;
+          const hasAnyImage = hasLightImage || hasDarkImage;
 
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          return (
+            <a
+              key={member._id}
+              href={member.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col overflow-hidden transition-all duration-300 bg-[#f0f0e8] dark:bg-background"
+            >
+              {/* Photo container */}
+              <div className="relative aspect-square bg-primary/5 dark:bg-white/5 overflow-hidden">
+                {hasAnyImage ? (
+                  <>
+                    {/* Photo - Light mode */}
+                    <img
+                      src={urlFor(hasLightImage ? member.photoLight : member.photoDark)
+                        .width(400)
+                        .height(400)
+                        .url()}
+                      alt={member.name}
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 dark:hidden"
+                    />
+                    {/* Photo - Dark mode */}
+                    <img
+                      src={urlFor(hasDarkImage ? member.photoDark : member.photoLight)
+                        .width(400)
+                        .height(400)
+                        .url()}
+                      alt={member.name}
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 hidden dark:block"
+                    />
+                  </>
+                ) : (
+                  /* Fallback: show initials if no image */
+                  <div className="absolute inset-0 flex items-center justify-center bg-primary/10 dark:bg-white/10">
+                    <span className="font-mono text-2xl text-primary/50 dark:text-white/50">
+                      {member.name
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </span>
+                  </div>
+                )}
 
-            {/* Text overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4">
-              <h3 className="font-mono text-xs md:text-sm text-white font-medium truncate">
-                {member.name}
-              </h3>
-              <p className="font-mono text-[10px] md:text-xs text-white/70 truncate">
-                {member.role}
-              </p>
-            </div>
+                {/* CRT texture overlay */}
+                <div
+                  className="absolute inset-0 bg-repeat pointer-events-none opacity-20 invert dark:invert-0 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen"
+                  style={{
+                    backgroundImage: "url(/texture.png)",
+                    backgroundSize: "3px",
+                    transform: "translateZ(0)",
+                  }}
+                />
+              </div>
 
-            {/* LinkedIn indicator */}
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <svg
-                className="w-4 h-4 md:w-5 md:h-5 text-white"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-              </svg>
-            </div>
-          </a>
-        ))}
+              {/* Info section below photo */}
+              <div className="p-2 md:p-3 flex flex-col gap-0.5 border-t border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+                <h3 className="font-mono text-xs md:text-sm text-primary dark:text-white font-medium truncate">
+                  {member.name}
+                </h3>
+                <p className="font-mono text-xs md:text-sm text-primary/60 dark:text-white/60 truncate">
+                  {member.position}
+                </p>
+              </div>
+            </a>
+          );
+        })}
       </div>
 
       {team.length === 0 && (
@@ -64,5 +100,5 @@ export function TeamSection({ team }: TeamSectionProps) {
         </div>
       )}
     </section>
-  )
+  );
 }

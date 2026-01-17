@@ -1,111 +1,118 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Terminal } from "./terminal"
-import { TeamSection } from "./team-section"
-import { PortfolioSection } from "./portfolio-section"
-import { PartnersSection } from "./partners-section"
-import type { TeamMember, PortfolioCompany, Partner } from "@/lib/sanity"
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Terminal } from "./terminal";
+import { TeamSection } from "./team-section";
+import { CompaniesSection } from "./companies-section";
+import { OutroSection } from "./outro-section";
+import type { TeamMember, Company } from "@/lib/sanity";
 
 type ScreenContentProps = {
-  team: TeamMember[]
-  portfolio: PortfolioCompany[]
-  partners: Partner[]
-}
+  team: TeamMember[];
+  companies: Company[];
+};
 
-const SECTIONS = ["terminal", "team", "portfolio", "partners"] as const
-type Section = (typeof SECTIONS)[number]
+const SECTIONS = ["terminal", "team", "companies", "outro"] as const;
+type Section = (typeof SECTIONS)[number];
 
-export function ScreenContent({
-  team,
-  portfolio,
-  partners,
-}: ScreenContentProps) {
-  const [currentSection, setCurrentSection] = useState<Section>("terminal")
-  const [isMobile, setIsMobile] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+export function ScreenContent({ team, companies }: ScreenContentProps) {
+  const [currentSection, setCurrentSection] = useState<Section>("terminal");
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<Section, HTMLDivElement | null>>({
     terminal: null,
     team: null,
-    portfolio: null,
-    partners: null,
-  })
+    companies: null,
+    outro: null,
+  });
 
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.matchMedia("(max-width: 768px)").matches)
-    }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Scroll to a specific section
   const scrollToSection = useCallback((section: Section) => {
-    const sectionElement = sectionRefs.current[section]
-    if (sectionElement && containerRef.current) {
-      sectionElement.scrollIntoView({ behavior: "smooth", block: "start" })
-      setCurrentSection(section)
+    const sectionElement = sectionRefs.current[section];
+    const container = containerRef.current;
+    if (sectionElement && container) {
+      const containerRect = container.getBoundingClientRect();
+      const sectionRect = sectionElement.getBoundingClientRect();
+      const scrollTop = container.scrollTop + (sectionRect.top - containerRect.top);
+      
+      container.scrollTo({
+        top: scrollTop,
+        behavior: "smooth",
+      });
+      setCurrentSection(section);
     }
-  }, [])
+  }, []);
 
   // Navigate to next section
   const navigateToNextSection = useCallback(() => {
-    const currentIndex = SECTIONS.indexOf(currentSection)
+    const currentIndex = SECTIONS.indexOf(currentSection);
     if (currentIndex < SECTIONS.length - 1) {
-      const nextSection = SECTIONS[currentIndex + 1]
-      scrollToSection(nextSection)
+      const nextSection = SECTIONS[currentIndex + 1];
+      scrollToSection(nextSection);
     }
-  }, [currentSection, scrollToSection])
+  }, [currentSection, scrollToSection]);
 
   // Handle Enter key for section navigation (when not on terminal section)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter" && currentSection !== "terminal") {
-        e.preventDefault()
-        navigateToNextSection()
+        e.preventDefault();
+        navigateToNextSection();
       }
-    }
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [currentSection, navigateToNextSection])
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentSection, navigateToNextSection]);
 
   // Update current section based on scroll position
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const container = containerRef.current;
+    if (!container) return;
 
     const handleScroll = () => {
-      const containerRect = container.getBoundingClientRect()
-      const containerTop = containerRect.top
+      const containerRect = container.getBoundingClientRect();
+      const containerHeight = containerRect.height;
+
+      let closestSection: Section = "terminal";
+      let closestDistance = Infinity;
 
       for (const section of SECTIONS) {
-        const sectionElement = sectionRefs.current[section]
+        const sectionElement = sectionRefs.current[section];
         if (sectionElement) {
-          const rect = sectionElement.getBoundingClientRect()
-          const relativeTop = rect.top - containerTop
+          const rect = sectionElement.getBoundingClientRect();
+          const relativeTop = rect.top - containerRect.top;
+          const distance = Math.abs(relativeTop);
 
-          // Section is considered active if its top is within the first half of the container
-          if (relativeTop <= containerRect.height / 2 && relativeTop > -rect.height / 2) {
-            if (currentSection !== section) {
-              setCurrentSection(section)
-            }
-            break
+          // Find the section closest to the top of the container
+          if (distance < closestDistance && relativeTop <= containerHeight * 0.5) {
+            closestDistance = distance;
+            closestSection = section;
           }
         }
       }
-    }
 
-    container.addEventListener("scroll", handleScroll, { passive: true })
-    return () => container.removeEventListener("scroll", handleScroll)
-  }, [currentSection])
+      setCurrentSection(closestSection);
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Handle terminal navigation callback
   const handleTerminalNavigate = useCallback(() => {
-    scrollToSection("team")
-  }, [scrollToSection])
+    scrollToSection("team");
+  }, [scrollToSection]);
 
   return (
     <div
@@ -119,10 +126,10 @@ export function ScreenContent({
       {/* Terminal Section */}
       <div
         ref={(el) => {
-          sectionRefs.current.terminal = el
+          sectionRefs.current.terminal = el;
         }}
-        className="min-h-full flex flex-col"
-        style={{ scrollSnapAlign: "start" }}
+        className="h-full flex-shrink-0 flex flex-col"
+        style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <Terminal onNavigate={handleTerminalNavigate} />
       </div>
@@ -130,38 +137,38 @@ export function ScreenContent({
       {/* Team Section */}
       <div
         ref={(el) => {
-          sectionRefs.current.team = el
+          sectionRefs.current.team = el;
         }}
-        className="min-h-full"
-        style={{ scrollSnapAlign: "start" }}
+        className="h-full flex-shrink-0 overflow-y-auto"
+        style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <TeamSection team={team} />
       </div>
 
-      {/* Portfolio Section */}
+      {/* Companies Section */}
       <div
         ref={(el) => {
-          sectionRefs.current.portfolio = el
+          sectionRefs.current.companies = el;
         }}
-        className="min-h-full"
-        style={{ scrollSnapAlign: "start" }}
+        className="h-full flex-shrink-0 overflow-y-auto"
+        style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <PortfolioSection portfolio={portfolio} />
+        <CompaniesSection companies={companies} />
       </div>
 
-      {/* Partners Section */}
+      {/* Outro Section */}
       <div
         ref={(el) => {
-          sectionRefs.current.partners = el
+          sectionRefs.current.outro = el;
         }}
-        className="min-h-full"
-        style={{ scrollSnapAlign: "start" }}
+        className="h-full flex-shrink-0 flex flex-col"
+        style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <PartnersSection partners={partners} />
+        <OutroSection />
       </div>
 
       {/* Navigation indicator */}
-      {currentSection !== "partners" && (
+      {currentSection !== "outro" && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
           <div className="font-mono text-xs text-primary/60 dark:text-white/60 animate-pulse">
             {isMobile ? "Scroll or tap to continue" : "Press ENTER to continue"}
@@ -185,5 +192,5 @@ export function ScreenContent({
         ))}
       </div>
     </div>
-  )
+  );
 }

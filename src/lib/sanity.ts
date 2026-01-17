@@ -1,117 +1,65 @@
-import { createClient, type SanityClient } from "@sanity/client";
-import imageUrlBuilder from "@sanity/image-url";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
 
-// Sanity image source type
-type SanityImageSource = {
-  _type: "image";
-  asset: {
-    _ref: string;
-    _type: "reference";
-  };
-};
+// Re-export urlFor for convenience
+export { urlFor };
 
-// Check if Sanity is configured
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-const isSanityConfigured = !!projectId;
-
-console.log({
-  projectId,
-  dataset,
-  isSanityConfigured,
-});
-
-// Create client only if configured
-export const client: SanityClient | null = isSanityConfigured
-  ? createClient({
-      projectId,
-      dataset,
-      apiVersion: "2024-01-01",
-      useCdn: true,
-    })
-  : null;
-
-// Image URL builder
-type ImageUrlBuilder = ReturnType<typeof imageUrlBuilder>;
-let builder: ImageUrlBuilder | null = null;
-if (client) {
-  builder = imageUrlBuilder(client);
-}
-
-// Chainable placeholder that returns placeholder URL
-const placeholderBuilder = {
-  url: () => "/placeholder.svg",
-  width: () => placeholderBuilder,
-  height: () => placeholderBuilder,
-  fit: () => placeholderBuilder,
-  auto: () => placeholderBuilder,
-  format: () => placeholderBuilder,
-  quality: () => placeholderBuilder,
-};
-
-export function urlFor(source: SanityImageSource) {
-  if (!builder) {
-    // Return a chainable placeholder when not configured
-    return placeholderBuilder;
-  }
-  return builder.image(source);
-}
-
-// Types
+// Types matching your Sanity schemas
 export type TeamMember = {
   _id: string;
   name: string;
-  role: string;
-  photo: SanityImageSource;
-  linkedInUrl: string;
-  order?: number;
+  position: string;
+  photoDark: {
+    asset: {
+      _ref: string;
+    };
+  };
+  photoLight: {
+    asset: {
+      _ref: string;
+    };
+  };
+  linkedinUrl: string;
 };
 
-export type PortfolioCompany = {
+export type Company = {
   _id: string;
   name: string;
-  logo: SanityImageSource;
-  linkedInUrl: string;
-  order?: number;
-};
-
-export type Partner = {
-  _id: string;
-  name: string;
-  logo: SanityImageSource;
-  linkedInUrl: string;
-  order?: number;
+  description?: string;
+  photoDark: {
+    asset: {
+      _ref: string;
+    };
+  };
+  photoLight: {
+    asset: {
+      _ref: string;
+    };
+  };
+  linkedinUrl: string;
 };
 
 // GROQ Queries
-export const teamQuery = `*[_type == "team"] | order(order asc) {
+const teamQuery = `*[_type == "team-member"] {
   _id,
   name,
-  role,
-  photo,
-  linkedInUrl,
-  order
+  position,
+  photoDark,
+  photoLight,
+  linkedinUrl
 }`;
 
-export const portfolioQuery = `*[_type == "portfolio"] | order(order asc) {
+const companyQuery = `*[_type == "company"] {
   _id,
   name,
-  logo,
-  linkedInUrl,
-  order
+  description,
+  photoDark,
+  photoLight,
+  linkedinUrl
 }`;
 
-export const partnersQuery = `*[_type == "partners"] | order(order asc) {
-  _id,
-  name,
-  logo,
-  linkedInUrl,
-  order
-}`;
-
-// Fetch functions with fallback for unconfigured state
+// Fetch functions
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  if (!client) return [];
   try {
     return await client.fetch(teamQuery);
   } catch (error) {
@@ -120,33 +68,21 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
   }
 }
 
-export async function getPortfolioCompanies(): Promise<PortfolioCompany[]> {
-  if (!client) return [];
+export async function getCompanies(): Promise<Company[]> {
   try {
-    return await client.fetch(portfolioQuery);
+    return await client.fetch(companyQuery);
   } catch (error) {
-    console.error("Failed to fetch portfolio companies:", error);
-    return [];
-  }
-}
-
-export async function getPartners(): Promise<Partner[]> {
-  if (!client) return [];
-  try {
-    return await client.fetch(partnersQuery);
-  } catch (error) {
-    console.error("Failed to fetch partners:", error);
+    console.error("Failed to fetch companies:", error);
     return [];
   }
 }
 
 // Fetch all data at once for the landing page
 export async function getAllLandingData() {
-  const [team, portfolio, partners] = await Promise.all([
+  const [team, companies] = await Promise.all([
     getTeamMembers(),
-    getPortfolioCompanies(),
-    getPartners(),
+    getCompanies(),
   ]);
 
-  return { team, portfolio, partners };
+  return { team, companies };
 }

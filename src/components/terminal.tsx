@@ -164,38 +164,23 @@ export function Terminal({ onNavigate }: TerminalProps) {
     // Third command
     {
       action: "type",
-      content: "> system_core --pre-seed round",
+      content: "> system_core --stage",
       delay: TYPING_SPEED,
     },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
-      content: "Angel ticket validated. All permissions granted.",
+      content: "Up to €500.000 from pre-seed stage. All permissions granted.",
       delay: 0,
     },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line after permissions granted
     { action: "pause", delay: COMMAND_DELAY },
 
-    // Fourth command
-    { action: "type", content: "> halt && catch-fire", delay: TYPING_SPEED },
-    { action: "pause", delay: RESPONSE_DELAY },
+    // Prompt to continue
+    { action: "empty", count: 1, delay: 0 },
     {
       action: "output",
-      content: "Warning: Undocumented instruction detected.",
-      delay: 0,
-      bold: true,
-    },
-    { action: "pause", delay: MODULE_DELAY },
-    {
-      action: "output",
-      content: "Switching bus lines too fast may lead to overheating.",
-      delay: 0,
-    },
-    { action: "pause", delay: MODULE_DELAY },
-    { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
-    {
-      action: "output",
-      content: "Press ENTER to continue..",
+      content: "Press ENTER to display team...",
       delay: 0,
     },
     { action: "prompt", delay: 0 },

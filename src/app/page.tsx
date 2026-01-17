@@ -1,10 +1,10 @@
-import { Switch } from "@/components/switch";
 import { ScreenContent } from "@/components/screen-content";
+import { Switch } from "@/components/switch";
 import { getAllLandingData } from "@/lib/sanity";
 
 export default async function Home() {
   // Fetch all CMS data
-  const { team, portfolio, partners } = await getAllLandingData();
+  const { team, companies } = await getAllLandingData();
 
   return (
     <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
@@ -17,7 +17,7 @@ export default async function Home() {
       >
         <div
           data-id="screen-frame"
-          className="w-full h-full p-4 md:p-10 rounded-[20px] flex flex-col"
+          className="w-full h-full p-2 md:p-6 rounded-[20px] flex flex-col"
           style={{
             background:
               "linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.50) 100%)",
@@ -40,54 +40,34 @@ export default async function Home() {
 
             {/* Screen content wrapper with padding */}
             <div className="flex flex-col h-full p-6 md:p-10 relative z-10">
-              {/* Logo header */}
-              <div data-id="logo" className="flex items-center mb-3 md:mb-6">
-                <img
-                  src="/logo-light.svg"
-                  alt="Drysdale Ventures Logo"
-                  width={400}
-                  height={48}
-                  className="w-48 md:w-auto md:pb-4 block dark:hidden"
-                />
-                <img
-                  src="/logo-dark.svg"
-                  alt="Drysdale Ventures Logo"
-                  width={400}
-                  height={48}
-                  className="w-48 md:w-auto md:pb-4 hidden dark:block"
-                />
-              </div>
-
-              {/* Main scrollable content area */}
-              <div
-                data-id="screen-content"
-                className="flex-1 font-mono text-xs md:text-sm text-primary flex flex-col overflow-hidden"
-              >
-                <ScreenContent
-                  team={team}
-                  portfolio={portfolio}
-                  partners={partners}
-                />
-              </div>
-
-              {/* Footer */}
-              <div className="flex flex-col md:flex-row text-primary justify-between w-full px-1.5 font-sans pt-4 gap-4 md:gap-0 border-t border-primary/10 dark:border-white/10 mt-4">
-                <div className="flex flex-row flex-wrap flex-1 gap-1 text-xs md:text-sm">
-                  <span>
-                    Drysdale Invest &copy; 2025 - Backing software companies
-                    from day 0
-                  </span>
+              {/* Header with logo and navigation */}
+              <div data-id="header" className="flex items-center justify-between mb-3 md:mb-6">
+                <div data-id="logo">
+                  <img
+                    src="/logo-light.svg"
+                    alt="Drysdale Ventures Logo"
+                    width={400}
+                    height={48}
+                    className="w-48 md:w-auto block dark:hidden"
+                  />
+                  <img
+                    src="/logo-dark.svg"
+                    alt="Drysdale Ventures Logo"
+                    width={400}
+                    height={48}
+                    className="w-48 md:w-auto hidden dark:block"
+                  />
                 </div>
-                <div className="flex flex-row gap-4 items-center text-xs md:text-sm">
+                <div className="flex flex-row gap-4 items-center text-xs md:text-sm font-sans text-primary">
                   <a
                     href="https://www.linkedin.com/company/drysdaleventures/about/"
-                    className="font-medium"
+                    className="font-medium hidden md:block"
                   >
                     LinkedIn
                   </a>
                   <a
                     href="https://drive.google.com/drive/folders/1ew3o4I_EQuCvN0lZD7uZ7Z2GZUhAqHvn?usp=sharing"
-                    className="font-medium"
+                    className="font-medium hidden md:block"
                   >
                     Media Kit
                   </a>
@@ -100,6 +80,21 @@ export default async function Home() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Main scrollable content area */}
+              <div
+                data-id="screen-content"
+                className="flex-1 font-mono text-xs md:text-sm text-primary flex flex-col overflow-hidden"
+              >
+                <ScreenContent team={team} companies={companies} />
+              </div>
+
+              {/* Footer */}
+              <div className="text-primary w-full px-1.5 font-sans pt-4 border-t border-primary/10 dark:border-white/10 mt-4">
+                <span className="text-xs md:text-sm">
+                  Drysdale Invest &copy; {new Date().getFullYear()} - Backing software companies from day 0
+                </span>
               </div>
             </div>
           </div>
