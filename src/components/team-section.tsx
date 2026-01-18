@@ -17,7 +17,7 @@ export function TeamSection({ team }: TeamSectionProps) {
         <span className="text-secondary">Loading team...</span>
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#e6e6e6]/20 dark:bg-[#e6e6e6]/20 border border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#e6e6e6]/20 dark:bg-[#e6e6e6]/20 border border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
         {team.map((member) => {
           const hasLightImage = member.photoLight?.asset?._ref;
           const hasDarkImage = member.photoDark?.asset?._ref;

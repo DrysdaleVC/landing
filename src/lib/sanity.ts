@@ -39,6 +39,12 @@ export type Company = {
   linkedinUrl: string;
 };
 
+export type Batch = {
+  _id: string;
+  year: number;
+  companies: Company[];
+};
+
 // GROQ Queries
 const teamQuery = `*[_type == "team-member"] {
   _id,
@@ -56,6 +62,19 @@ const companyQuery = `*[_type == "company"] {
   photoDark,
   photoLight,
   linkedinUrl
+}`;
+
+const batchQuery = `*[_type == "batch"] | order(year desc) {
+  _id,
+  year,
+  companies[]-> {
+    _id,
+    name,
+    description,
+    photoDark,
+    photoLight,
+    linkedinUrl
+  }
 }`;
 
 // Fetch functions
@@ -77,12 +96,21 @@ export async function getCompanies(): Promise<Company[]> {
   }
 }
 
+export async function getBatches(): Promise<Batch[]> {
+  try {
+    return await client.fetch(batchQuery);
+  } catch (error) {
+    console.error("Failed to fetch batches:", error);
+    return [];
+  }
+}
+
 // Fetch all data at once for the landing page
 export async function getAllLandingData() {
-  const [team, companies] = await Promise.all([
+  const [team, batches] = await Promise.all([
     getTeamMembers(),
-    getCompanies(),
+    getBatches(),
   ]);
 
-  return { team, companies };
+  return { team, batches };
 }

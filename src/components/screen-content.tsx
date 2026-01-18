@@ -1,30 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Terminal } from "./terminal";
 import { TeamSection } from "./team-section";
 import { CompaniesSection } from "./companies-section";
 import { OutroSection } from "./outro-section";
-import type { TeamMember, Company } from "@/lib/sanity";
+import type { TeamMember, Batch } from "@/lib/sanity";
 
 type ScreenContentProps = {
   team: TeamMember[];
-  companies: Company[];
+  batches: Batch[];
 };
 
-const SECTIONS = ["terminal", "team", "companies", "outro"] as const;
-type Section = (typeof SECTIONS)[number];
+export function ScreenContent({ team, batches }: ScreenContentProps) {
+  // Build sections array dynamically based on batches
+  const sections = useMemo(() => {
+    const base: string[] = ["terminal", "team"];
+    const batchSections = batches.map((_, i) => `batch-${i}`);
+    return [...base, ...batchSections, "outro"];
+  }, [batches]);
 
-export function ScreenContent({ team, companies }: ScreenContentProps) {
-  const [currentSection, setCurrentSection] = useState<Section>("terminal");
+  const [currentSection, setCurrentSection] = useState<string>("terminal");
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = useRef<Record<Section, HTMLDivElement | null>>({
-    terminal: null,
-    team: null,
-    companies: null,
-    outro: null,
-  });
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Check if device is mobile
   useEffect(() => {
@@ -37,7 +36,7 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
   }, []);
 
   // Scroll to a specific section
-  const scrollToSection = useCallback((section: Section) => {
+  const scrollToSection = useCallback((section: string) => {
     const sectionElement = sectionRefs.current[section];
     const container = containerRef.current;
     if (sectionElement && container) {
@@ -55,12 +54,12 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
 
   // Navigate to next section
   const navigateToNextSection = useCallback(() => {
-    const currentIndex = SECTIONS.indexOf(currentSection);
-    if (currentIndex < SECTIONS.length - 1) {
-      const nextSection = SECTIONS[currentIndex + 1];
+    const currentIndex = sections.indexOf(currentSection);
+    if (currentIndex < sections.length - 1) {
+      const nextSection = sections[currentIndex + 1];
       scrollToSection(nextSection);
     }
-  }, [currentSection, scrollToSection]);
+  }, [currentSection, scrollToSection, sections]);
 
   // Handle Enter key for section navigation (when not on terminal section)
   useEffect(() => {
@@ -84,10 +83,10 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
       const containerRect = container.getBoundingClientRect();
       const containerHeight = containerRect.height;
 
-      let closestSection: Section = "terminal";
+      let closestSection: string = "terminal";
       let closestDistance = Infinity;
 
-      for (const section of SECTIONS) {
+      for (const section of sections) {
         const sectionElement = sectionRefs.current[section];
         if (sectionElement) {
           const rect = sectionElement.getBoundingClientRect();
@@ -107,7 +106,7 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
 
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [sections]);
 
   // Handle terminal navigation callback
   const handleTerminalNavigate = useCallback(() => {
@@ -117,7 +116,7 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto scroll-smooth"
+      className="flex-1 overflow-y-auto scroll-smooth scrollbar-thin"
       style={{
         scrollSnapType: "y mandatory",
         scrollBehavior: "smooth",
@@ -128,7 +127,7 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
         ref={(el) => {
           sectionRefs.current.terminal = el;
         }}
-        className="h-full flex-shrink-0 flex flex-col"
+        className="min-h-full flex-shrink-0 flex flex-col"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <Terminal onNavigate={handleTerminalNavigate} />
@@ -139,29 +138,32 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
         ref={(el) => {
           sectionRefs.current.team = el;
         }}
-        className="h-full flex-shrink-0 overflow-y-auto"
+        className="min-h-full flex-shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <TeamSection team={team} />
       </div>
 
-      {/* Companies Section */}
-      <div
-        ref={(el) => {
-          sectionRefs.current.companies = el;
-        }}
-        className="h-full flex-shrink-0 overflow-y-auto"
-        style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
-      >
-        <CompaniesSection companies={companies} />
-      </div>
+      {/* Batch Sections - dynamically rendered */}
+      {batches.map((batch, index) => (
+        <div
+          key={batch._id}
+          ref={(el) => {
+            sectionRefs.current[`batch-${index}`] = el;
+          }}
+          className="min-h-full flex-shrink-0"
+          style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
+        >
+          <CompaniesSection batch={batch} />
+        </div>
+      ))}
 
       {/* Outro Section */}
       <div
         ref={(el) => {
           sectionRefs.current.outro = el;
         }}
-        className="h-full flex-shrink-0 flex flex-col"
+        className="min-h-full flex-shrink-0 flex flex-col"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <OutroSection />
@@ -178,7 +180,7 @@ export function ScreenContent({ team, companies }: ScreenContentProps) {
 
       {/* Section dots indicator */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">
-        {SECTIONS.map((section) => (
+        {sections.map((section) => (
           <button
             key={section}
             onClick={() => scrollToSection(section)}

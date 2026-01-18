@@ -1,24 +1,23 @@
 "use client";
 
-import { urlFor, type Company } from "@/lib/sanity";
+import { urlFor, type Batch } from "@/lib/sanity";
 
 type CompaniesSectionProps = {
-  companies: Company[];
+  batch: Batch;
 };
 
-export function CompaniesSection({ companies }: CompaniesSectionProps) {
-  // Debug: log companies data
-  console.log("Companies data:", companies);
+export function CompaniesSection({ batch }: CompaniesSectionProps) {
+  const { year, companies } = batch;
 
   return (
     <section className="h-full w-[80%] flex flex-col py-2">
-      <h2 className="font-mono text-xs md:text-sm text-primary mb-2 flex-shrink-0">
-        <span className="text-secondary">&gt;</span> system_core --portfolio<br />
-        <span className="text-secondary">Loading portfolio...</span>
+      <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
+        <span className="text-secondary">&gt;</span> system_core --portfolio --year={year}<br />
+        <span className="text-secondary">Loading {year} batch...</span>
       </h2>
 
-      <div className="grid grid-cols-4 border-l border-t border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
-        {companies.map((company) => {
+      <div className="grid grid-cols-1 md:grid-cols-4 border-l border-t border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+        {companies?.map((company) => {
           const hasLightImage = company.photoLight?.asset?._ref;
           const hasDarkImage = company.photoDark?.asset?._ref;
           const hasAnyImage = hasLightImage || hasDarkImage;
@@ -29,7 +28,7 @@ export function CompaniesSection({ companies }: CompaniesSectionProps) {
               href={company.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative aspect-[200/88] bg-transparent overflow-hidden flex items-center justify-center p-4 border-r border-b border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20"
+              className="group relative aspect-200/88 bg-transparent overflow-hidden flex items-center justify-center border-r border-b border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20"
               title={company.name}
             >
               {hasAnyImage ? (
@@ -64,10 +63,10 @@ export function CompaniesSection({ companies }: CompaniesSectionProps) {
         })}
       </div>
 
-      {companies.length === 0 && (
+      {(!companies || companies.length === 0) && (
         <div className="flex-1 flex items-center justify-center">
           <p className="font-mono text-xs text-secondary">
-            No companies found. Add them in Sanity Studio.
+            No companies in this batch. Add them in Sanity Studio.
           </p>
         </div>
       )}

@@ -4,7 +4,7 @@ import { getAllLandingData } from "@/lib/sanity";
 
 export default async function Home() {
   // Fetch all CMS data
-  const { team, companies } = await getAllLandingData();
+  const { team, batches } = await getAllLandingData();
 
   return (
     <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
@@ -87,7 +87,7 @@ export default async function Home() {
                 data-id="screen-content"
                 className="flex-1 font-mono text-xs md:text-sm text-primary flex flex-col overflow-hidden"
               >
-                <ScreenContent team={team} companies={companies} />
+                <ScreenContent team={team} batches={batches} />
               </div>
 
               {/* Footer */}
