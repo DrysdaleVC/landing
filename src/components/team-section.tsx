@@ -17,7 +17,7 @@ export function TeamSection({ team }: TeamSectionProps) {
         <span className="text-secondary">Loading team...</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#e6e6e6]/20 dark:bg-[#e6e6e6]/20 border border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#333537]/20 dark:bg-[#e6e6e6]/20 border border-[#333537]/20 dark:border-[#e6e6e6]/20">
         {team.map((member) => {
           const hasLightImage = member.photoLight?.asset?._ref;
           const hasDarkImage = member.photoDark?.asset?._ref;
@@ -42,7 +42,7 @@ export function TeamSection({ team }: TeamSectionProps) {
                         .height(400)
                         .url()}
                       alt={member.name}
-                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 dark:hidden"
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out dark:hidden"
                     />
                     {/* Photo - Dark mode */}
                     <img
@@ -51,7 +51,7 @@ export function TeamSection({ team }: TeamSectionProps) {
                         .height(400)
                         .url()}
                       alt={member.name}
-                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300 hidden dark:block"
+                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out hidden dark:block"
                     />
                   </>
                 ) : (
@@ -66,20 +66,10 @@ export function TeamSection({ team }: TeamSectionProps) {
                     </span>
                   </div>
                 )}
-
-                {/* CRT texture overlay */}
-                <div
-                  className="absolute inset-0 bg-repeat pointer-events-none opacity-20 invert dark:invert-0 dark:opacity-15 mix-blend-multiply dark:mix-blend-screen"
-                  style={{
-                    backgroundImage: "url(/texture.png)",
-                    backgroundSize: "3px",
-                    transform: "translateZ(0)",
-                  }}
-                />
               </div>
 
               {/* Info section below photo */}
-              <div className="p-2 md:p-3 flex flex-col gap-0.5 border-t border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+              <div className="p-2 md:p-3 flex flex-col gap-0.5 border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
                 <h3 className="font-mono text-xs md:text-sm text-primary dark:text-white font-medium truncate">
                   {member.name}
                 </h3>

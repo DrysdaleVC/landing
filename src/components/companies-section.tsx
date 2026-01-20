@@ -16,7 +16,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
         <span className="text-secondary">Loading {year} batch...</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 border-l border-t border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20">
+      <div className="grid grid-cols-1 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
         {companies?.map((company) => {
           const hasLightImage = company.photoLight?.asset?._ref;
           const hasDarkImage = company.photoDark?.asset?._ref;
@@ -28,7 +28,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
               href={company.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative aspect-200/88 bg-transparent overflow-hidden flex items-center justify-center border-r border-b border-[#e6e6e6]/20 dark:border-[#e6e6e6]/20"
+              className="group relative aspect-200/88 bg-transparent overflow-hidden flex items-center justify-center border-r border-b border-[#333537]/20 dark:border-[#e6e6e6]/20"
               title={company.name}
             >
               {hasAnyImage ? (
@@ -40,7 +40,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
                       .height(176)
                       .url()}
                     alt={company.name}
-                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 dark:hidden"
+                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out dark:hidden"
                   />
                   {/* Logo - Dark mode */}
                   <img
@@ -49,7 +49,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
                       .height(176)
                       .url()}
                     alt={company.name}
-                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300 hidden dark:block"
+                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out hidden dark:block"
                   />
                 </>
               ) : (

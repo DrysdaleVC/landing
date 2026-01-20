@@ -7,10 +7,10 @@ export default async function Home() {
   const { team, batches } = await getAllLandingData();
 
   return (
-    <main className="min-h-[100vh] w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
+    <main className="min-h-screen w-full flex items-center p-0 justify-center md:bg-background md:bg-none sm:bg-[url(/rough_plastic.webp)] bg-cover">
       <div
         data-id="computer-frame"
-        className="w-full h-[100svh] overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-6 md:p-16 md:rounded-xl"
+        className="w-full h-svh overflow-y-hidden md:h-auto relative min-h-screen md:min-h-[800px] bg-[url(/rough_plastic.webp)] brightness-75 bg-center bg-cover max-w-7xl md:aspect-video flex flex-col md:justify-center p-6 md:p-16 md:rounded-xl"
         style={{
           boxShadow: "0 0 40px rgba(0, 0, 0, 0.8)",
         }}
@@ -31,7 +31,7 @@ export default async function Home() {
           >
             <div
               data-id="noise"
-              className="absolute inset-0 bg-repeat z-10 bg-[6px] dark:bg-[2px] rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-50 invert dark:invert-0 dark:opacity-20 will-change-opacity"
+              className="absolute inset-0 bg-repeat z-10 bg-position-[6px] dark:bg-position-[2px] rounded-[16px] md:rounded-[24px] pointer-events-none opacity-20 md:opacity-50 invert dark:invert-0 dark:opacity-20 will-change-opacity"
               style={{
                 backgroundImage: "url(/texture.png)",
                 transform: "translateZ(0)",
@@ -46,16 +46,12 @@ export default async function Home() {
                   <img
                     src="/logo-light.svg"
                     alt="Drysdale Ventures Logo"
-                    width={400}
-                    height={48}
-                    className="w-48 md:w-auto block dark:hidden"
+                    className="h-6 md:h-8 w-auto block dark:hidden"
                   />
                   <img
                     src="/logo-dark.svg"
                     alt="Drysdale Ventures Logo"
-                    width={400}
-                    height={48}
-                    className="w-48 md:w-auto hidden dark:block"
+                    className="h-6 md:h-8 w-auto hidden dark:block"
                   />
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm font-sans text-primary">
@@ -91,11 +87,6 @@ export default async function Home() {
               </div>
 
               {/* Footer */}
-              <div className="text-primary w-full px-1.5 font-sans pt-4 border-t border-primary/10 dark:border-white/10 mt-4">
-                <span className="text-xs md:text-sm">
-                  Drysdale Invest &copy; {new Date().getFullYear()} - Backing software companies from day 0
-                </span>
-              </div>
             </div>
           </div>
         </div>
