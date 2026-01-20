@@ -42,7 +42,7 @@ export function TeamSection({ team }: TeamSectionProps) {
                         .height(400)
                         .url()}
                       alt={member.name}
-                      className="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out dark:hidden"
+                      className="absolute inset-0 w-full h-full object-cover brightness-75 contrast-125 grayscale group-hover:grayscale-0 transition-all duration-300 ease-in-out dark:hidden"
                     />
                     {/* Photo - Dark mode */}
                     <img

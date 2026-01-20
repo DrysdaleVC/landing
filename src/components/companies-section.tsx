@@ -40,7 +40,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
                       .height(176)
                       .url()}
                     alt={company.name}
-                    className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 group-hover:brightness-[1.5] transition-all duration-300 ease-in-out dark:hidden"
+                    className="max-w-full max-h-full object-contain brightness-75 contrast-125 grayscale group-hover:grayscale-0 transition-all duration-300 ease-in-out dark:hidden"
                   />
                   {/* Logo - Dark mode */}
                   <img
