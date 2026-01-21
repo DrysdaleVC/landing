@@ -55,10 +55,16 @@ const TerminalLineComponent = React.memo(
         onClick={onClick}
         style={style}
       >
-        {line.content === "Press ENTER to display team..." && isMobile ? (
-          <span className="flex flex-row items-center gap-1.5">
-            Click <span className="font-bold">here</span> to display team...
-          </span>
+        {line.content === "Press ENTER to display team..." ? (
+          isMobile ? (
+            <span>
+              Click <span className="font-bold">HERE</span> to display team...
+            </span>
+          ) : (
+            <span>
+              Press <span className="font-bold">ENTER</span> to display team...
+            </span>
+          )
         ) : (
           line.content
         )}

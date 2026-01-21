@@ -46,7 +46,7 @@ export type Batch = {
 };
 
 // GROQ Queries
-const teamQuery = `*[_type == "team-member"] {
+const teamQuery = `*[_type == "team-member"] | order(order asc) {
   _id,
   name,
   position,

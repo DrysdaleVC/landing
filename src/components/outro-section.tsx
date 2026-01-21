@@ -1,26 +1,74 @@
 "use client";
 
-export function OutroSection() {
-  return (
-    <section className="min-h-full w-[80%] flex flex-col py-2 font-mono text-xs md:text-sm">
-      <div className="flex flex-col gap-1">
-        <div className="text-primary">
-          <span className="text-secondary">&gt;</span> halt && catch-fire
-        </div>
-        <div className="text-primary font-bold">
-          Warning: Undocumented instruction detected.
-        </div>
-        <div className="text-primary">
-          Switching bus lines too fast may lead to overheating.
-        </div>
-      </div>
+import { useEffect, useRef, useState } from "react";
+import { TypingText } from "./typing-text";
 
-      {/* Prompt to continue to LinkedIn */}
-      <div className="font-mono text-xs md:text-sm text-primary mt-4 flex items-center">
-        <span className="hidden md:inline">Press ENTER to visit LinkedIn...</span>
-        <span className="md:hidden">Click <span className="font-bold">HERE</span> to continue...</span>
-        <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
-      </div>
+export function OutroSection() {
+  const [isInView, setIsInView] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Detect when section enters viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect(); // Only trigger once
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="min-h-full w-[80%] flex flex-col py-2 font-mono text-xs md:text-sm">
+      <TypingText
+        lines={[
+          { text: "> halt && catch-fire", className: "text-primary" },
+          { text: "Warning: Undocumented instruction detected.", className: "text-primary font-bold" },
+          { text: "Switching bus lines too fast may lead to overheating.", className: "text-primary" },
+        ]}
+        typingSpeed={30}
+        lineDelay={200}
+        startTyping={isInView}
+        onComplete={() => setShowPrompt(true)}
+      />
+
+      {/* Prompt to continue - with typing animation */}
+      {showPrompt && (
+        <div className="mt-4">
+          <TypingText
+            lines={[
+              {
+                text: isMobile ? "Click HERE to continue..." : "Press ENTER to continue...",
+                className: "text-primary",
+                boldWords: isMobile ? ["HERE"] : ["ENTER"],
+              },
+            ]}
+            typingSpeed={30}
+            lineDelay={0}
+            startTyping
+          />
+        </div>
+      )}
     </section>
   );
 }

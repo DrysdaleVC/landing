@@ -1,6 +1,8 @@
 "use client";
 
 import { urlFor, type Batch } from "@/lib/sanity";
+import { useEffect, useRef, useState } from "react";
+import { TypingText } from "./typing-text";
 
 type CompaniesSectionProps = {
   batch: Batch;
@@ -8,16 +10,49 @@ type CompaniesSectionProps = {
 
 export function CompaniesSection({ batch }: CompaniesSectionProps) {
   const { year, companies } = batch;
+  const [isInView, setIsInView] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Detect when section enters viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect(); // Only trigger once
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="h-full w-[80%] flex flex-col py-2">
+    <section ref={sectionRef} className="h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
       <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
-        <span className="text-secondary">&gt;</span> system_core --portfolio<br />
-        <span className="text-secondary">Loading {year} vintage...</span>
+        <TypingText
+          lines={[
+            { text: "> system_core --portfolio", className: "text-primary" },
+            { text: `Loading ${year} vintage...`, className: "text-secondary" },
+          ]}
+          typingSpeed={30}
+          lineDelay={200}
+          startTyping={isInView}
+          onComplete={() => setShowContent(true)}
+        />
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
-        {companies?.map((company) => {
+      <div
+        className="grid grid-cols-2 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20 transition-opacity duration-150"
+        style={{ opacity: showContent ? 1 : 0 }}
+      >
+        {companies?.map((company, index) => {
           const hasLightImage = company.photoLight?.asset?._ref;
           const hasDarkImage = company.photoDark?.asset?._ref;
           const hasAnyImage = hasLightImage || hasDarkImage;
@@ -30,6 +65,11 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
               rel="noopener noreferrer"
               className="group relative aspect-200/88 bg-transparent overflow-hidden flex items-center justify-center border-r border-b border-[#333537]/20 dark:border-[#e6e6e6]/20"
               title={company.name}
+              style={{
+                opacity: showContent ? 1 : 0,
+                transition: "opacity 150ms ease-in-out",
+                transitionDelay: showContent ? `${index * 100}ms` : "0ms",
+              }}
             >
               {hasAnyImage ? (
                 <>

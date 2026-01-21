@@ -1,24 +1,57 @@
 "use client";
 
 import { urlFor, type TeamMember } from "@/lib/sanity";
+import { useEffect, useRef, useState } from "react";
+import { TypingText } from "./typing-text";
 
 type TeamSectionProps = {
   team: TeamMember[];
 };
 
 export function TeamSection({ team }: TeamSectionProps) {
-  // Debug: log team data
-  console.log("Team data:", team);
+  const [isInView, setIsInView] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Detect when section enters viewport
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect(); // Only trigger once
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="h-full w-[80%] flex flex-col py-2">
+    <section ref={sectionRef} className="h-full w-[80%] flex flex-col py-2">
       <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
-        <span className="text-secondary">&gt;</span> system_core --team <br />
-        <span className="text-secondary">Loading team...</span>
+        <TypingText
+          lines={[
+            { text: "> system_core --team", className: "text-primary" },
+            { text: "Loading team...", className: "text-secondary" },
+          ]}
+          typingSpeed={30}
+          lineDelay={200}
+          startTyping={isInView}
+          onComplete={() => setShowContent(true)}
+        />
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {team.map((member) => {
+      <div
+        className="grid grid-cols-2 md:grid-cols-3 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20 transition-opacity duration-150"
+        style={{ opacity: showContent ? 1 : 0 }}
+      >
+        {team.map((member, index) => {
           const hasLightImage = member.photoLight?.asset?._ref;
           const hasDarkImage = member.photoDark?.asset?._ref;
           const hasAnyImage = hasLightImage || hasDarkImage;
@@ -29,7 +62,12 @@ export function TeamSection({ team }: TeamSectionProps) {
               href={member.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col overflow-hidden transition-all duration-300 bg-[#f0f0e8] dark:bg-background border border-[#333537]/20 dark:border-[#e6e6e6]/20"
+              className="group flex flex-col overflow-hidden bg-[#f0f0e8] dark:bg-background border-r border-b border-[#333537]/20 dark:border-[#e6e6e6]/20"
+              style={{
+                opacity: showContent ? 1 : 0,
+                transition: "opacity 150ms ease-in-out",
+                transitionDelay: showContent ? `${index * 100}ms` : "0ms",
+              }}
             >
               {/* Photo container */}
               <div className="relative aspect-square bg-primary/5 dark:bg-white/5 overflow-hidden">
@@ -92,7 +130,7 @@ export function TeamSection({ team }: TeamSectionProps) {
 
       {/* Prompt to continue */}
       <div className="font-mono text-xs md:text-sm text-primary mt-4 flex items-center">
-        <span className="hidden md:inline">Press ENTER to display portfolio...</span>
+        <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to display portfolio...</span>
         <span className="md:hidden">Click <span className="font-bold">HERE</span> to display portfolio...</span>
         <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
       </div>
