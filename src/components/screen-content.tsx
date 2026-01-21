@@ -87,6 +87,44 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
     scrollToSectionByIndex(1); // Navigate to team (index 1)
   }, [scrollToSectionByIndex]);
 
+  // Update current section based on scroll position (for manual scrolling)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const containerRect = container.getBoundingClientRect();
+
+      let closestSection: string = "terminal";
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const sectionElement = sectionRefs.current[section];
+        if (sectionElement) {
+          const rect = sectionElement.getBoundingClientRect();
+          const relativeTop = rect.top - containerRect.top;
+          const distance = Math.abs(relativeTop);
+
+          // Find the section closest to the top of the container
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = section;
+            closestIndex = i;
+          }
+        }
+      }
+
+      // Update both state and ref
+      setCurrentSection(closestSection);
+      currentIndexRef.current = closestIndex;
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [sections]);
+
   return (
     <div
       ref={containerRef}
