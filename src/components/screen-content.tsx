@@ -101,7 +101,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         ref={(el) => {
           sectionRefs.current.terminal = el;
         }}
-        className="min-h-full flex-shrink-0 flex flex-col"
+        className="min-h-full shrink-0 flex flex-col"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <Terminal onNavigate={handleTerminalNavigate} />
@@ -112,7 +112,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         ref={(el) => {
           sectionRefs.current.team = el;
         }}
-        className="min-h-full flex-shrink-0"
+        className="min-h-full shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <TeamSection team={team} />
@@ -125,7 +125,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
           ref={(el) => {
             sectionRefs.current[`batch-${index}`] = el;
           }}
-          className="min-h-full flex-shrink-0"
+          className="min-h-full shrink-0"
           style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
         >
           <CompaniesSection batch={batch} />
@@ -137,7 +137,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         ref={(el) => {
           sectionRefs.current.outro = el;
         }}
-        className="min-h-full flex-shrink-0 flex flex-col"
+        className="min-h-full shrink-0 flex flex-col"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
         <OutroSection />
@@ -150,7 +150,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
           <button
             key={section}
             onClick={() => scrollToSection(section)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSection === section
+            className={`size-2 rounded-full transition-all duration-300 ${currentSection === section
               ? "bg-primary dark:bg-white scale-125"
               : "bg-primary/30 dark:bg-white/30 hover:bg-primary/60 dark:hover:bg-white/60"
               }`}

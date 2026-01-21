@@ -12,8 +12,8 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
   return (
     <section className="h-full w-[80%] flex flex-col py-2">
       <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
-        <span className="text-secondary">&gt;</span> system_core --portfolio --year={year}<br />
-        <span className="text-secondary">Loading {year} batch...</span>
+        <span className="text-secondary">&gt;</span> system_core --portfolio<br />
+        <span className="text-secondary">Loading {year} vintage...</span>
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
@@ -70,6 +70,10 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
           </p>
         </div>
       )}
+
+      <h2 className="font-mono text-xs md:text-sm text-primary my-4 shrink-0">
+        <span className="text-secondary">{year} vintage</span>: {companies?.length} companies loaded<br />
+      </h2>
     </section>
   );
 }
