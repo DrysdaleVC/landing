@@ -135,54 +135,33 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     };
   }, [showContent, totalCompanies, getScrollContainer]);
 
-  // After all logos appear: scroll to outro area FIRST, then show the text
+  // After all logos appear: show outro and scroll to bottom of it
   useEffect(() => {
     if (!showContent || totalCompanies === 0) return;
+
+    const delay = getTotalAnimationDelay() + 300;
+
+    const timer = setTimeout(() => {
+      setShowOutro(true);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [showContent, totalCompanies]);
+
+  // As soon as outro appears, scroll down to show all the text
+  useEffect(() => {
+    if (!showOutro) return;
+    if (userScrolledRef.current) return;
 
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    // Wait for all logos to appear, then scroll, then show outro
-    const delay = getTotalAnimationDelay() + 300;
-
-    const timer = setTimeout(() => {
-      if (userScrolledRef.current) {
-        // User scrolled, just show the outro without scrolling
-        setShowOutro(true);
-        return;
-      }
-
-      const outro = outroRef.current;
-      if (!outro) {
-        setShowOutro(true);
-        return;
-      }
-
-      const containerRect = scrollContainer.getBoundingClientRect();
-      const outroRect = outro.getBoundingClientRect();
-      const containerHeight = containerRect.height;
-
-      // Calculate scroll to center the outro in the visible area
-      const outroCenter = outroRect.top + outroRect.height / 2;
-      const containerCenter = containerRect.top + containerHeight / 2;
-      const scrollAmount = outroCenter - containerCenter;
-
-      if (scrollAmount > 10) {
-        scrollContainer.scrollBy({
-          top: scrollAmount,
-          behavior: "smooth",
-        });
-
-        // Wait for scroll to complete, then show outro text
-        setTimeout(() => setShowOutro(true), 800);
-      } else {
-        // Already in position, show outro immediately
-        setShowOutro(true);
-      }
-    }, delay);
-
-    return () => clearTimeout(timer);
-  }, [showContent, totalCompanies, getScrollContainer]);
+    // Just scroll down by 300px to ensure the outro text is fully visible
+    scrollContainer.scrollBy({
+      top: 300,
+      behavior: "smooth",
+    });
+  }, [showOutro, getScrollContainer]);
 
   // Scroll to LinkedIn prompt when it appears
   useEffect(() => {
