@@ -92,7 +92,8 @@ export function TeamSection({ team }: TeamSectionProps) {
 
       {/* Prompt to continue */}
       <div className="font-mono text-xs md:text-sm text-primary mt-4 flex items-center">
-        Press ENTER to display portfolio...
+        <span className="hidden md:inline">Press ENTER to display portfolio...</span>
+        <span className="md:hidden">Click <span className="font-bold">HERE</span> to display portfolio...</span>
         <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
       </div>
     </section>
