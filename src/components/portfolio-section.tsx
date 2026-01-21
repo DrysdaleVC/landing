@@ -19,8 +19,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const outroRef = useRef<HTMLDivElement>(null);
   const linkedInPromptRef = useRef<HTMLDivElement>(null);
-  const autoScrollActiveRef = useRef(false);
-  const lastScrollTopRef = useRef(0);
+  const userScrolledRef = useRef(false);
 
   // Check if mobile
   useEffect(() => {
@@ -76,6 +75,23 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     return null;
   }, []);
 
+  // Detect user scroll via wheel/touch
+  useEffect(() => {
+    if (!showContent) return;
+
+    const handleUserScroll = () => {
+      userScrolledRef.current = true;
+    };
+
+    window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchmove", handleUserScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleUserScroll);
+      window.removeEventListener("touchmove", handleUserScroll);
+    };
+  }, [showContent]);
+
   // Auto-scroll as items appear
   useEffect(() => {
     if (!showContent || totalCompanies === 0) return;
@@ -83,31 +99,14 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    autoScrollActiveRef.current = true;
-    lastScrollTopRef.current = scrollContainer.scrollTop;
-
-    // Detect manual scroll to stop auto-scroll
-    const handleManualScroll = () => {
-      if (!autoScrollActiveRef.current) return;
-
-      const currentScrollTop = scrollContainer.scrollTop;
-      const diff = Math.abs(currentScrollTop - lastScrollTopRef.current);
-
-      // If scroll difference is large and not from our auto-scroll, user scrolled manually
-      if (diff > 50) {
-        autoScrollActiveRef.current = false;
-      }
-      lastScrollTopRef.current = currentScrollTop;
-    };
-
-    scrollContainer.addEventListener("scroll", handleManualScroll, { passive: true });
+    userScrolledRef.current = false;
 
     // Scroll to each item as it appears
     const timers: NodeJS.Timeout[] = [];
 
     for (let i = 0; i < totalCompanies; i++) {
       const timer = setTimeout(() => {
-        if (!autoScrollActiveRef.current) return;
+        if (userScrolledRef.current) return;
 
         const item = itemRefs.current[i];
         if (!item) return;
@@ -117,67 +116,73 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
 
         // Check if item is below the visible area
         if (itemRect.bottom > containerRect.bottom) {
-          // Add extra padding for the last few items to make room for outro
-          const isNearEnd = i >= totalCompanies - 4;
-          const padding = isNearEnd ? 80 : 20;
+          // More padding for last items to ensure they're clearly visible
+          const isLastFew = i >= totalCompanies - 4;
+          const padding = isLastFew ? 60 : 20;
           const scrollAmount = itemRect.bottom - containerRect.bottom + padding;
-          lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
           scrollContainer.scrollBy({
             top: scrollAmount,
             behavior: "smooth",
           });
         }
-      }, i * 100 + 50); // Match the stagger delay + small buffer
+      }, i * 100 + 50);
 
       timers.push(timer);
     }
 
     return () => {
       timers.forEach(clearTimeout);
-      scrollContainer.removeEventListener("scroll", handleManualScroll);
-      autoScrollActiveRef.current = false;
     };
   }, [showContent, totalCompanies, getScrollContainer]);
 
-  // Show outro after all companies have appeared
+  // After all logos appear: scroll to outro area FIRST, then show the text
   useEffect(() => {
-    if (showContent) {
-      const delay = getTotalAnimationDelay() + 500; // Add 500ms buffer
-      const timer = setTimeout(() => setShowOutro(true), delay);
-      return () => clearTimeout(timer);
-    }
-  }, [showContent, batches]);
-
-  // Scroll to outro when it appears - scroll it to the top of the visible area
-  useEffect(() => {
-    if (!showOutro) return;
+    if (!showContent || totalCompanies === 0) return;
 
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    // Longer delay to let the last company scroll complete and outro render
+    // Wait for all logos to appear, then scroll, then show outro
+    const delay = getTotalAnimationDelay() + 300;
+
     const timer = setTimeout(() => {
-      if (!autoScrollActiveRef.current) return;
+      if (userScrolledRef.current) {
+        // User scrolled, just show the outro without scrolling
+        setShowOutro(true);
+        return;
+      }
 
       const outro = outroRef.current;
-      if (!outro) return;
+      if (!outro) {
+        setShowOutro(true);
+        return;
+      }
 
       const containerRect = scrollContainer.getBoundingClientRect();
       const outroRect = outro.getBoundingClientRect();
+      const containerHeight = containerRect.height;
 
-      // Scroll so that the outro is at the top of the container with some padding
-      const scrollAmount = outroRect.top - containerRect.top - 40; // 40px from top
-      if (scrollAmount > 0) {
-        lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+      // Calculate scroll to center the outro in the visible area
+      const outroCenter = outroRect.top + outroRect.height / 2;
+      const containerCenter = containerRect.top + containerHeight / 2;
+      const scrollAmount = outroCenter - containerCenter;
+
+      if (scrollAmount > 10) {
         scrollContainer.scrollBy({
           top: scrollAmount,
           behavior: "smooth",
         });
+
+        // Wait for scroll to complete, then show outro text
+        setTimeout(() => setShowOutro(true), 800);
+      } else {
+        // Already in position, show outro immediately
+        setShowOutro(true);
       }
-    }, 400);
+    }, delay);
 
     return () => clearTimeout(timer);
-  }, [showOutro, getScrollContainer]);
+  }, [showContent, totalCompanies, getScrollContainer]);
 
   // Scroll to LinkedIn prompt when it appears
   useEffect(() => {
@@ -186,9 +191,8 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    // Delay to let the prompt render
-    const timer = setTimeout(() => {
-      if (!autoScrollActiveRef.current) return;
+    const scrollToPrompt = () => {
+      if (userScrolledRef.current) return;
 
       const prompt = linkedInPromptRef.current;
       if (!prompt) return;
@@ -196,18 +200,23 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
       const containerRect = scrollContainer.getBoundingClientRect();
       const promptRect = prompt.getBoundingClientRect();
 
-      // Make sure the prompt is fully visible
-      if (promptRect.bottom > containerRect.bottom) {
-        const scrollAmount = promptRect.bottom - containerRect.bottom + 60;
-        lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+      if (promptRect.bottom > containerRect.bottom - 20) {
+        const scrollAmount = promptRect.bottom - containerRect.bottom + 80;
         scrollContainer.scrollBy({
           top: scrollAmount,
           behavior: "smooth",
         });
       }
-    }, 400);
+    };
 
-    return () => clearTimeout(timer);
+    // Try multiple times
+    const timer1 = setTimeout(scrollToPrompt, 100);
+    const timer2 = setTimeout(scrollToPrompt, 500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, [showLinkedInPrompt, getScrollContainer]);
 
   return (
@@ -312,37 +321,38 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
         </div>
       )}
 
+      {/* Outro footer - container always present for scrolling, content appears after scroll */}
+      <div ref={outroRef} className="mt-4 min-h-[120px]">
+        {showOutro && (
+          <>
+            <TypingText
+              lines={[
+                { text: "> halt && catch-fire", className: "text-primary font-mono text-xs md:text-sm" },
+                { text: "Warning: Undocumented instruction detected.", className: "text-primary font-mono text-xs md:text-sm font-bold" },
+                { text: "Switching bus lines too fast may lead to overheating.", className: "text-primary font-mono text-xs md:text-sm" },
+              ]}
+              typingSpeed={30}
+              lineDelay={200}
+              startTyping={true}
+              onComplete={() => setShowLinkedInPrompt(true)}
+            />
 
-      {/* Outro footer */}
-      {showOutro && (
-        <div ref={outroRef} className="mt-2">
-          <TypingText
-            lines={[
-              { text: "> halt && catch-fire", className: "text-primary font-mono text-xs md:text-sm" },
-              { text: "Warning: Undocumented instruction detected.", className: "text-primary font-mono text-xs md:text-sm font-bold" },
-              { text: "Switching bus lines too fast may lead to overheating.", className: "text-primary font-mono text-xs md:text-sm" },
-            ]}
-            typingSpeed={30}
-            lineDelay={200}
-            startTyping={true}
-            onComplete={() => setShowLinkedInPrompt(true)}
-          />
-
-          {/* LinkedIn prompt */}
-          {showLinkedInPrompt && (
-            <div ref={linkedInPromptRef} className="mt-6 font-mono text-xs md:text-sm text-primary flex items-center">
-              <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to continue...</span>
-              <button
-                className="md:hidden text-left"
-                onClick={onNavigate}
-              >
-                Click <span className="font-bold">HERE</span> to continue...
-              </button>
-              <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
-            </div>
-          )}
-        </div>
-      )}
+            {/* LinkedIn prompt */}
+            {showLinkedInPrompt && (
+              <div ref={linkedInPromptRef} className="mt-6 font-mono text-xs md:text-sm text-primary flex items-center">
+                <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to continue...</span>
+                <button
+                  className="md:hidden text-left"
+                  onClick={onNavigate}
+                >
+                  Click <span className="font-bold">HERE</span> to continue...
+                </button>
+                <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </section>
   );
 }

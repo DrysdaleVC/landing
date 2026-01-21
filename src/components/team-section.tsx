@@ -14,8 +14,8 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
   const [showContent, setShowContent] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const autoScrollActiveRef = useRef(false);
-  const lastScrollTopRef = useRef(0);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const userScrolledRef = useRef(false);
 
   // Detect when section enters viewport
   useEffect(() => {
@@ -49,6 +49,23 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     return null;
   }, []);
 
+  // Detect user scroll via wheel/touch
+  useEffect(() => {
+    if (!showContent) return;
+
+    const handleUserScroll = () => {
+      userScrolledRef.current = true;
+    };
+
+    window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchmove", handleUserScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleUserScroll);
+      window.removeEventListener("touchmove", handleUserScroll);
+    };
+  }, [showContent]);
+
   // Auto-scroll as items appear
   useEffect(() => {
     if (!showContent || team.length === 0) return;
@@ -56,31 +73,14 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    autoScrollActiveRef.current = true;
-    lastScrollTopRef.current = scrollContainer.scrollTop;
-
-    // Detect manual scroll to stop auto-scroll
-    const handleManualScroll = () => {
-      if (!autoScrollActiveRef.current) return;
-
-      const currentScrollTop = scrollContainer.scrollTop;
-      const diff = Math.abs(currentScrollTop - lastScrollTopRef.current);
-
-      // If scroll difference is large and not from our auto-scroll, user scrolled manually
-      if (diff > 50) {
-        autoScrollActiveRef.current = false;
-      }
-      lastScrollTopRef.current = currentScrollTop;
-    };
-
-    scrollContainer.addEventListener("scroll", handleManualScroll, { passive: true });
+    userScrolledRef.current = false;
 
     // Scroll to each item as it appears
     const timers: NodeJS.Timeout[] = [];
 
     team.forEach((_, index) => {
       const timer = setTimeout(() => {
-        if (!autoScrollActiveRef.current) return;
+        if (userScrolledRef.current) return;
 
         const item = itemRefs.current[index];
         if (!item) return;
@@ -90,22 +90,41 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
 
         // Check if item is below the visible area
         if (itemRect.bottom > containerRect.bottom) {
-          const scrollAmount = itemRect.bottom - containerRect.bottom + 20; // 20px padding
-          lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+          const scrollAmount = itemRect.bottom - containerRect.bottom + 20;
           scrollContainer.scrollBy({
             top: scrollAmount,
             behavior: "smooth",
           });
         }
-      }, index * 100 + 50); // Match the stagger delay + small buffer
+      }, index * 100 + 50);
 
       timers.push(timer);
     });
 
+    // Final scroll to show footer - scroll just enough to make it visible, not to the top
+    const footerTimer = setTimeout(() => {
+      if (userScrolledRef.current) return;
+
+      const footer = footerRef.current;
+      if (!footer) return;
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const footerRect = footer.getBoundingClientRect();
+
+      // Only scroll if footer is below the visible area - scroll just enough to show it
+      if (footerRect.bottom > containerRect.bottom) {
+        const scrollAmount = footerRect.bottom - containerRect.bottom + 40;
+        scrollContainer.scrollBy({
+          top: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }, team.length * 100 + 400);
+
+    timers.push(footerTimer);
+
     return () => {
       timers.forEach(clearTimeout);
-      scrollContainer.removeEventListener("scroll", handleManualScroll);
-      autoScrollActiveRef.current = false;
     };
   }, [showContent, team.length, getScrollContainer]);
 
@@ -208,7 +227,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
 
       {/* Team count and prompt to continue */}
       {showContent && team.length > 0 && (
-        <div className="font-mono text-xs md:text-sm text-primary mt-4">
+        <div ref={footerRef} className="font-mono text-xs md:text-sm text-primary mt-4">
           <p className="mb-1">{team.length} team member{team.length !== 1 ? 's' : ''} loaded.</p>
           <div className="flex items-center">
             <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to display portfolio...</span>
