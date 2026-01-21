@@ -1,11 +1,11 @@
 "use client";
 
+import type { Batch, TeamMember } from "@/lib/sanity";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Terminal } from "./terminal";
-import { TeamSection } from "./team-section";
 import { CompaniesSection } from "./companies-section";
 import { OutroSection } from "./outro-section";
-import type { TeamMember, Batch } from "@/lib/sanity";
+import { TeamSection } from "./team-section";
+import { Terminal } from "./terminal";
 
 type ScreenContentProps = {
   team: TeamMember[];
@@ -23,37 +23,56 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
   const [currentSection, setCurrentSection] = useState<string>("terminal");
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  // Track current index with a ref for reliable navigation
+  const currentIndexRef = useRef(0);
 
-  // Scroll to a specific section
-  const scrollToSection = useCallback((section: string) => {
+  // Scroll to a specific section by index
+  const scrollToSectionByIndex = useCallback((index: number) => {
+    if (index < 0 || index >= sections.length) return;
+
+    const section = sections[index];
     const sectionElement = sectionRefs.current[section];
     const container = containerRef.current;
+
     if (sectionElement && container) {
+      currentIndexRef.current = index;
+      setCurrentSection(section);
+
       const containerRect = container.getBoundingClientRect();
       const sectionRect = sectionElement.getBoundingClientRect();
       const scrollTop = container.scrollTop + (sectionRect.top - containerRect.top);
-      
+
       container.scrollTo({
         top: scrollTop,
         behavior: "smooth",
       });
-      setCurrentSection(section);
     }
-  }, []);
+  }, [sections]);
 
-  // Navigate to next section
-  const navigateToNextSection = useCallback(() => {
-    const currentIndex = sections.indexOf(currentSection);
-    if (currentIndex < sections.length - 1) {
-      const nextSection = sections[currentIndex + 1];
-      scrollToSection(nextSection);
+  // Scroll to a specific section by name
+  const scrollToSection = useCallback((section: string) => {
+    const index = sections.indexOf(section);
+    if (index !== -1) {
+      scrollToSectionByIndex(index);
     }
-  }, [currentSection, scrollToSection, sections]);
+  }, [sections, scrollToSectionByIndex]);
+
+  // Navigate to next section or LinkedIn if on outro
+  const navigateToNextSection = useCallback(() => {
+    const currentIndex = currentIndexRef.current;
+    if (currentIndex >= sections.length - 1) {
+      // On outro (last section), navigate to LinkedIn
+      window.location.href = "https://www.linkedin.com/company/drysdaleventures/about/";
+    } else {
+      scrollToSectionByIndex(currentIndex + 1);
+    }
+  }, [sections, scrollToSectionByIndex]);
 
   // Handle Enter key for section navigation (when not on terminal section)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && currentSection !== "terminal") {
+      // Only handle if not on terminal (index 0)
+      if (e.key === "Enter" && currentIndexRef.current > 0) {
         e.preventDefault();
         navigateToNextSection();
       }
@@ -61,46 +80,12 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSection, navigateToNextSection]);
-
-  // Update current section based on scroll position
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const containerRect = container.getBoundingClientRect();
-      const containerHeight = containerRect.height;
-
-      let closestSection: string = "terminal";
-      let closestDistance = Infinity;
-
-      for (const section of sections) {
-        const sectionElement = sectionRefs.current[section];
-        if (sectionElement) {
-          const rect = sectionElement.getBoundingClientRect();
-          const relativeTop = rect.top - containerRect.top;
-          const distance = Math.abs(relativeTop);
-
-          // Find the section closest to the top of the container
-          if (distance < closestDistance && relativeTop <= containerHeight * 0.5) {
-            closestDistance = distance;
-            closestSection = section;
-          }
-        }
-      }
-
-      setCurrentSection(closestSection);
-    };
-
-    container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [sections]);
+  }, [navigateToNextSection]);
 
   // Handle terminal navigation callback
   const handleTerminalNavigate = useCallback(() => {
-    scrollToSection("team");
-  }, [scrollToSection]);
+    scrollToSectionByIndex(1); // Navigate to team (index 1)
+  }, [scrollToSectionByIndex]);
 
   return (
     <div
@@ -165,11 +150,10 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
           <button
             key={section}
             onClick={() => scrollToSection(section)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              currentSection === section
-                ? "bg-primary dark:bg-white scale-125"
-                : "bg-primary/30 dark:bg-white/30 hover:bg-primary/60 dark:hover:bg-white/60"
-            }`}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSection === section
+              ? "bg-primary dark:bg-white scale-125"
+              : "bg-primary/30 dark:bg-white/30 hover:bg-primary/60 dark:hover:bg-white/60"
+              }`}
             aria-label={`Go to ${section} section`}
           />
         ))}

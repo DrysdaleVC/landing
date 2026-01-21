@@ -86,6 +86,8 @@ export function Terminal({ onNavigate }: TerminalProps) {
   const [isMobile, setIsMobile] = useState(false);
   // State to track if animation is complete
   const [animationComplete, setAnimationComplete] = useState(false);
+  // State to track if we've already navigated away from terminal
+  const [hasNavigated, setHasNavigated] = useState(false);
   // Reference to the terminal container for scrolling
   const terminalRef = useRef<HTMLDivElement>(null);
   // Reference to track if we should skip animation
@@ -346,13 +348,17 @@ export function Terminal({ onNavigate }: TerminalProps) {
 
   // Handle navigation
   const handleNavigate = useCallback(() => {
-    if (onNavigate) {
+    if (onNavigate && !hasNavigated) {
+      setHasNavigated(true);
       onNavigate();
     }
-  }, [onNavigate]);
+  }, [onNavigate, hasNavigated]);
 
-  // Handle Enter key press
+  // Handle Enter key press - only when still on terminal
   useEffect(() => {
+    // Don't listen for Enter if we've already navigated away
+    if (hasNavigated) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
         if (!animationComplete && animationRunningRef.current) {
@@ -367,16 +373,16 @@ export function Terminal({ onNavigate }: TerminalProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [animationComplete, skipAnimation, handleNavigate]);
+  }, [animationComplete, skipAnimation, handleNavigate, hasNavigated]);
 
-  // Handle click on "Press ENTER to continue.."
+  // Handle click on "Press ENTER to display team..."
   const handleContinueClick = useCallback(() => {
     if (!animationComplete) {
       skipAnimation();
-    } else {
+    } else if (!hasNavigated) {
       handleNavigate();
     }
-  }, [animationComplete, skipAnimation, handleNavigate]);
+  }, [animationComplete, skipAnimation, handleNavigate, hasNavigated]);
 
   return (
     <div className="relative h-full will-change-contents">

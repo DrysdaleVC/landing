@@ -57,7 +57,7 @@ export default async function Home() {
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm font-sans text-primary">
                   <a
                     href="https://www.linkedin.com/company/drysdaleventures/about/"
-                    className="font-medium hidden md:block"
+                    className="font-medium"
                   >
                     LinkedIn
                   </a>
