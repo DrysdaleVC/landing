@@ -148,7 +148,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         className="min-h-full shrink-0 flex flex-col"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <Terminal onNavigate={handleTerminalNavigate} />
+        <Terminal onNavigate={handleTerminalNavigate} isActive={currentSection === "terminal"} />
       </div>
 
       {/* Team Section */}

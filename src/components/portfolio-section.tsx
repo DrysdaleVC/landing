@@ -1,7 +1,7 @@
 "use client";
 
 import { urlFor, type Batch } from "@/lib/sanity";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TypingText } from "./typing-text";
 
 type PortfolioSectionProps = {
@@ -16,6 +16,11 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
   const [showLinkedInPrompt, setShowLinkedInPrompt] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const outroRef = useRef<HTMLDivElement>(null);
+  const linkedInPromptRef = useRef<HTMLDivElement>(null);
+  const autoScrollActiveRef = useRef(false);
+  const lastScrollTopRef = useRef(0);
 
   // Check if mobile
   useEffect(() => {
@@ -58,6 +63,82 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     return count * 100; // 100ms per company
   };
 
+  // Get the scroll container (parent with overflow-y-auto)
+  const getScrollContainer = useCallback(() => {
+    let parent = sectionRef.current?.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      if (style.overflowY === "auto" || style.overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return null;
+  }, []);
+
+  // Auto-scroll as items appear
+  useEffect(() => {
+    if (!showContent || totalCompanies === 0) return;
+
+    const scrollContainer = getScrollContainer();
+    if (!scrollContainer) return;
+
+    autoScrollActiveRef.current = true;
+    lastScrollTopRef.current = scrollContainer.scrollTop;
+
+    // Detect manual scroll to stop auto-scroll
+    const handleManualScroll = () => {
+      if (!autoScrollActiveRef.current) return;
+
+      const currentScrollTop = scrollContainer.scrollTop;
+      const diff = Math.abs(currentScrollTop - lastScrollTopRef.current);
+
+      // If scroll difference is large and not from our auto-scroll, user scrolled manually
+      if (diff > 50) {
+        autoScrollActiveRef.current = false;
+      }
+      lastScrollTopRef.current = currentScrollTop;
+    };
+
+    scrollContainer.addEventListener("scroll", handleManualScroll, { passive: true });
+
+    // Scroll to each item as it appears
+    const timers: NodeJS.Timeout[] = [];
+
+    for (let i = 0; i < totalCompanies; i++) {
+      const timer = setTimeout(() => {
+        if (!autoScrollActiveRef.current) return;
+
+        const item = itemRefs.current[i];
+        if (!item) return;
+
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+
+        // Check if item is below the visible area
+        if (itemRect.bottom > containerRect.bottom) {
+          // Add extra padding for the last few items to make room for outro
+          const isNearEnd = i >= totalCompanies - 4;
+          const padding = isNearEnd ? 80 : 20;
+          const scrollAmount = itemRect.bottom - containerRect.bottom + padding;
+          lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+          scrollContainer.scrollBy({
+            top: scrollAmount,
+            behavior: "smooth",
+          });
+        }
+      }, i * 100 + 50); // Match the stagger delay + small buffer
+
+      timers.push(timer);
+    }
+
+    return () => {
+      timers.forEach(clearTimeout);
+      scrollContainer.removeEventListener("scroll", handleManualScroll);
+      autoScrollActiveRef.current = false;
+    };
+  }, [showContent, totalCompanies, getScrollContainer]);
+
   // Show outro after all companies have appeared
   useEffect(() => {
     if (showContent) {
@@ -66,6 +147,68 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
       return () => clearTimeout(timer);
     }
   }, [showContent, batches]);
+
+  // Scroll to outro when it appears - scroll it to the top of the visible area
+  useEffect(() => {
+    if (!showOutro) return;
+
+    const scrollContainer = getScrollContainer();
+    if (!scrollContainer) return;
+
+    // Longer delay to let the last company scroll complete and outro render
+    const timer = setTimeout(() => {
+      if (!autoScrollActiveRef.current) return;
+
+      const outro = outroRef.current;
+      if (!outro) return;
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const outroRect = outro.getBoundingClientRect();
+
+      // Scroll so that the outro is at the top of the container with some padding
+      const scrollAmount = outroRect.top - containerRect.top - 40; // 40px from top
+      if (scrollAmount > 0) {
+        lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+        scrollContainer.scrollBy({
+          top: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [showOutro, getScrollContainer]);
+
+  // Scroll to LinkedIn prompt when it appears
+  useEffect(() => {
+    if (!showLinkedInPrompt) return;
+
+    const scrollContainer = getScrollContainer();
+    if (!scrollContainer) return;
+
+    // Delay to let the prompt render
+    const timer = setTimeout(() => {
+      if (!autoScrollActiveRef.current) return;
+
+      const prompt = linkedInPromptRef.current;
+      if (!prompt) return;
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const promptRect = prompt.getBoundingClientRect();
+
+      // Make sure the prompt is fully visible
+      if (promptRect.bottom > containerRect.bottom) {
+        const scrollAmount = promptRect.bottom - containerRect.bottom + 60;
+        lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+        scrollContainer.scrollBy({
+          top: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [showLinkedInPrompt, getScrollContainer]);
 
   return (
     <section ref={sectionRef} className="min-h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
@@ -115,6 +258,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
                 return (
                   <a
                     key={company._id}
+                    ref={(el) => { itemRefs.current[animationIndex] = el; }}
                     href={company.linkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -171,7 +315,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
 
       {/* Outro footer */}
       {showOutro && (
-        <div className="mt-2">
+        <div ref={outroRef} className="mt-2">
           <TypingText
             lines={[
               { text: "> halt && catch-fire", className: "text-primary font-mono text-xs md:text-sm" },
@@ -186,7 +330,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
 
           {/* LinkedIn prompt */}
           {showLinkedInPrompt && (
-            <div className="mt-6 font-mono text-xs md:text-sm text-primary flex items-center">
+            <div ref={linkedInPromptRef} className="mt-6 font-mono text-xs md:text-sm text-primary flex items-center">
               <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to continue...</span>
               <button
                 className="md:hidden text-left"

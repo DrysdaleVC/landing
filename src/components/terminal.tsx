@@ -77,9 +77,10 @@ TerminalLineComponent.displayName = "TerminalLineComponent";
 
 type TerminalProps = {
   onNavigate?: () => void;
+  isActive?: boolean;
 };
 
-export function Terminal({ onNavigate }: TerminalProps) {
+export function Terminal({ onNavigate, isActive = true }: TerminalProps) {
   // State to track the displayed lines
   const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>([]);
   // State to track the current typing content
@@ -92,8 +93,6 @@ export function Terminal({ onNavigate }: TerminalProps) {
   const [isMobile, setIsMobile] = useState(false);
   // State to track if animation is complete
   const [animationComplete, setAnimationComplete] = useState(false);
-  // State to track if we've already navigated away from terminal
-  const [hasNavigated, setHasNavigated] = useState(false);
   // Reference to the terminal container for scrolling
   const terminalRef = useRef<HTMLDivElement>(null);
   // Reference to track if we should skip animation
@@ -354,16 +353,14 @@ export function Terminal({ onNavigate }: TerminalProps) {
 
   // Handle navigation
   const handleNavigate = useCallback(() => {
-    if (onNavigate && !hasNavigated) {
-      setHasNavigated(true);
+    if (onNavigate) {
       onNavigate();
     }
-  }, [onNavigate, hasNavigated]);
+  }, [onNavigate]);
 
-  // Handle Enter key press - only when still on terminal
+  // Handle Enter key press - only when terminal is the active section
   useEffect(() => {
-    // Don't listen for Enter if we've already navigated away
-    if (hasNavigated) return;
+    if (!isActive) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -379,16 +376,16 @@ export function Terminal({ onNavigate }: TerminalProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [animationComplete, skipAnimation, handleNavigate, hasNavigated]);
+  }, [isActive, animationComplete, skipAnimation, handleNavigate]);
 
   // Handle click on "Press ENTER to display team..."
   const handleContinueClick = useCallback(() => {
     if (!animationComplete) {
       skipAnimation();
-    } else if (!hasNavigated) {
+    } else {
       handleNavigate();
     }
-  }, [animationComplete, skipAnimation, handleNavigate, hasNavigated]);
+  }, [animationComplete, skipAnimation, handleNavigate]);
 
   return (
     <div className="relative h-full will-change-contents">

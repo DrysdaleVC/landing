@@ -1,7 +1,7 @@
 "use client";
 
 import { urlFor, type TeamMember } from "@/lib/sanity";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TypingText } from "./typing-text";
 
 type TeamSectionProps = {
@@ -13,6 +13,9 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
   const [isInView, setIsInView] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const autoScrollActiveRef = useRef(false);
+  const lastScrollTopRef = useRef(0);
 
   // Detect when section enters viewport
   useEffect(() => {
@@ -23,7 +26,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsInView(true);
-          observer.disconnect(); // Only trigger once
+          observer.disconnect();
         }
       },
       { threshold: 0.1 }
@@ -32,6 +35,79 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
+
+  // Get the scroll container (parent with overflow-y-auto)
+  const getScrollContainer = useCallback(() => {
+    let parent = sectionRef.current?.parentElement;
+    while (parent) {
+      const style = getComputedStyle(parent);
+      if (style.overflowY === "auto" || style.overflowY === "scroll") {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return null;
+  }, []);
+
+  // Auto-scroll as items appear
+  useEffect(() => {
+    if (!showContent || team.length === 0) return;
+
+    const scrollContainer = getScrollContainer();
+    if (!scrollContainer) return;
+
+    autoScrollActiveRef.current = true;
+    lastScrollTopRef.current = scrollContainer.scrollTop;
+
+    // Detect manual scroll to stop auto-scroll
+    const handleManualScroll = () => {
+      if (!autoScrollActiveRef.current) return;
+
+      const currentScrollTop = scrollContainer.scrollTop;
+      const diff = Math.abs(currentScrollTop - lastScrollTopRef.current);
+
+      // If scroll difference is large and not from our auto-scroll, user scrolled manually
+      if (diff > 50) {
+        autoScrollActiveRef.current = false;
+      }
+      lastScrollTopRef.current = currentScrollTop;
+    };
+
+    scrollContainer.addEventListener("scroll", handleManualScroll, { passive: true });
+
+    // Scroll to each item as it appears
+    const timers: NodeJS.Timeout[] = [];
+
+    team.forEach((_, index) => {
+      const timer = setTimeout(() => {
+        if (!autoScrollActiveRef.current) return;
+
+        const item = itemRefs.current[index];
+        if (!item) return;
+
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+
+        // Check if item is below the visible area
+        if (itemRect.bottom > containerRect.bottom) {
+          const scrollAmount = itemRect.bottom - containerRect.bottom + 20; // 20px padding
+          lastScrollTopRef.current = scrollContainer.scrollTop + scrollAmount;
+          scrollContainer.scrollBy({
+            top: scrollAmount,
+            behavior: "smooth",
+          });
+        }
+      }, index * 100 + 50); // Match the stagger delay + small buffer
+
+      timers.push(timer);
+    });
+
+    return () => {
+      timers.forEach(clearTimeout);
+      scrollContainer.removeEventListener("scroll", handleManualScroll);
+      autoScrollActiveRef.current = false;
+    };
+  }, [showContent, team.length, getScrollContainer]);
 
   return (
     <section ref={sectionRef} className="h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
@@ -60,6 +136,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
           return (
             <a
               key={member._id}
+              ref={(el) => { itemRefs.current[index] = el; }}
               href={member.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -135,7 +212,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
           <p className="mb-1">{team.length} team member{team.length !== 1 ? 's' : ''} loaded.</p>
           <div className="flex items-center">
             <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to display portfolio...</span>
-            <button 
+            <button
               className="md:hidden text-left"
               onClick={onNavigate}
             >
