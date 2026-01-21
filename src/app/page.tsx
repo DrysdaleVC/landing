@@ -46,12 +46,12 @@ export default async function Home() {
                   <img
                     src="/logo-light.svg"
                     alt="Drysdale Ventures Logo"
-                    className="h-6 md:h-8 w-auto block dark:hidden"
+                    className="h-8 md:h-12 w-auto block dark:hidden"
                   />
                   <img
                     src="/logo-dark.svg"
                     alt="Drysdale Ventures Logo"
-                    className="h-6 md:h-8 w-auto hidden dark:block"
+                    className="h-8 md:h-12 w-auto hidden dark:block"
                   />
                 </div>
                 <div className="flex flex-row gap-4 items-center text-xs md:text-sm font-sans text-primary">

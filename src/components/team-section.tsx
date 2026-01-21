@@ -12,12 +12,12 @@ export function TeamSection({ team }: TeamSectionProps) {
 
   return (
     <section className="h-full w-[80%] flex flex-col py-2">
-      <h2 className="font-mono text-xs md:text-sm text-primary mb-2 flex-shrink-0">
+      <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
         <span className="text-secondary">&gt;</span> system_core --team <br />
         <span className="text-secondary">Loading team...</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[#333537]/20 dark:bg-[#e6e6e6]/20 border border-[#333537]/20 dark:border-[#e6e6e6]/20">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {team.map((member) => {
           const hasLightImage = member.photoLight?.asset?._ref;
           const hasDarkImage = member.photoDark?.asset?._ref;
@@ -29,7 +29,7 @@ export function TeamSection({ team }: TeamSectionProps) {
               href={member.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col overflow-hidden transition-all duration-300 bg-[#f0f0e8] dark:bg-background"
+              className="group flex flex-col overflow-hidden transition-all duration-300 bg-[#f0f0e8] dark:bg-background border border-[#333537]/20 dark:border-[#e6e6e6]/20"
             >
               {/* Photo container */}
               <div className="relative aspect-square bg-primary/5 dark:bg-white/5 overflow-hidden">
@@ -42,7 +42,7 @@ export function TeamSection({ team }: TeamSectionProps) {
                         .height(400)
                         .url()}
                       alt={member.name}
-                      className="absolute inset-0 w-full h-full object-cover brightness-75 contrast-125 grayscale group-hover:grayscale-0 transition-all duration-300 ease-in-out dark:hidden"
+                      className="absolute inset-0 w-full h-full object-cover brightness-75 contrast-125 grayscale group-hover:grayscale-0 group-hover:contrast-175 transition-all duration-300 ease-in-out dark:hidden"
                     />
                     {/* Photo - Dark mode */}
                     <img
@@ -73,7 +73,7 @@ export function TeamSection({ team }: TeamSectionProps) {
                 <h3 className="font-mono text-xs md:text-sm text-primary dark:text-white font-medium truncate">
                   {member.name}
                 </h3>
-                <p className="font-mono text-xs md:text-sm text-primary/60 dark:text-white/60 truncate">
+                <p className="font-mono font-text-xs md:text-sm text-primary/80 dark:text-white/60 truncate">
                   {member.position}
                 </p>
               </div>
@@ -89,6 +89,12 @@ export function TeamSection({ team }: TeamSectionProps) {
           </p>
         </div>
       )}
+
+      {/* Prompt to continue */}
+      <div className="font-mono text-xs md:text-sm text-primary mt-4 flex items-center">
+        Press ENTER to display portfolio...
+        <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
+      </div>
     </section>
   );
 }

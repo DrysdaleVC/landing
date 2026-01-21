@@ -55,9 +55,9 @@ const TerminalLineComponent = React.memo(
         onClick={onClick}
         style={style}
       >
-        {line.content === "Press ENTER to continue.." && isMobile ? (
+        {line.content === "Press ENTER to display team..." && isMobile ? (
           <span className="flex flex-row items-center gap-1.5">
-            Click <span className="font-bold">here</span> to continue
+            Click <span className="font-bold">here</span> to display team...
           </span>
         ) : (
           line.content
@@ -398,19 +398,19 @@ export function Terminal({ onNavigate }: TerminalProps) {
             isLastLine={
               index === displayedLines.length - 1 &&
               line.type === "output" &&
-              (line.content === "Press ENTER to continue.." ||
-                (isMobile && line.content === "Click here to continue"))
+              (line.content === "Press ENTER to display team..." ||
+                (isMobile && line.content === "Click here to display team..."))
             }
-            showCaret={true}
+            showCaret={showPrompt}
             isMobile={isMobile}
             lineColor={getLineColor(index, line)}
             onClick={
-              line.content === "Press ENTER to continue.."
+              line.content === "Press ENTER to display team..."
                 ? handleContinueClick
                 : undefined
             }
             style={
-              line.content === "Press ENTER to continue.."
+              line.content === "Press ENTER to display team..."
                 ? { cursor: "pointer" }
                 : undefined
             }

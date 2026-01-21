@@ -21,19 +21,8 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
   }, [batches]);
 
   const [currentSection, setCurrentSection] = useState<string>("terminal");
-  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   // Scroll to a specific section
   const scrollToSection = useCallback((section: string) => {
@@ -169,14 +158,6 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         <OutroSection />
       </div>
 
-      {/* Navigation indicator */}
-      {currentSection !== "outro" && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-          <div className="font-mono text-xs text-primary/60 dark:text-white/60 animate-pulse">
-            {isMobile ? "Scroll or tap to continue" : "Press ENTER to continue"}
-          </div>
-        </div>
-      )}
 
       {/* Section dots indicator */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2">

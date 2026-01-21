@@ -16,7 +16,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
         <span className="text-secondary">Loading {year} batch...</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
+      <div className="grid grid-cols-2 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20">
         {companies?.map((company) => {
           const hasLightImage = company.photoLight?.asset?._ref;
           const hasDarkImage = company.photoDark?.asset?._ref;
@@ -40,7 +40,7 @@ export function CompaniesSection({ batch }: CompaniesSectionProps) {
                       .height(176)
                       .url()}
                     alt={company.name}
-                    className="max-w-full max-h-full object-contain brightness-75 contrast-125 grayscale group-hover:grayscale-0 transition-all duration-300 ease-in-out dark:hidden"
+                    className="max-w-full max-h-full object-contain brightness-75 contrast-150 grayscale group-hover:grayscale-0 group-hover:invert transition-all duration-300 ease-in-out dark:hidden"
                   />
                   {/* Logo - Dark mode */}
                   <img
