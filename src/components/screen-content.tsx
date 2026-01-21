@@ -1,9 +1,8 @@
 "use client";
 
 import type { Batch, TeamMember } from "@/lib/sanity";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CompaniesSection } from "./companies-section";
-import { OutroSection } from "./outro-section";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { PortfolioSection } from "./portfolio-section";
 import { TeamSection } from "./team-section";
 import { Terminal } from "./terminal";
 
@@ -12,13 +11,10 @@ type ScreenContentProps = {
   batches: Batch[];
 };
 
+// Fixed 3 sections
+const sections = ["terminal", "team", "portfolio"];
+
 export function ScreenContent({ team, batches }: ScreenContentProps) {
-  // Build sections array dynamically based on batches
-  const sections = useMemo(() => {
-    const base: string[] = ["terminal", "team"];
-    const batchSections = batches.map((_, i) => `batch-${i}`);
-    return [...base, ...batchSections, "outro"];
-  }, [batches]);
 
   const [currentSection, setCurrentSection] = useState<string>("terminal");
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +43,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         behavior: "smooth",
       });
     }
-  }, [sections]);
+  }, []);
 
   // Scroll to a specific section by name
   const scrollToSection = useCallback((section: string) => {
@@ -55,18 +51,18 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
     if (index !== -1) {
       scrollToSectionByIndex(index);
     }
-  }, [sections, scrollToSectionByIndex]);
+  }, [scrollToSectionByIndex]);
 
-  // Navigate to next section or LinkedIn if on outro
+  // Navigate to next section or LinkedIn if on portfolio
   const navigateToNextSection = useCallback(() => {
     const currentIndex = currentIndexRef.current;
     if (currentIndex >= sections.length - 1) {
-      // On outro (last section), navigate to LinkedIn
+      // On portfolio (last section), navigate to LinkedIn
       window.location.href = "https://www.linkedin.com/company/drysdaleventures/about/";
     } else {
       scrollToSectionByIndex(currentIndex + 1);
     }
-  }, [sections, scrollToSectionByIndex]);
+  }, [scrollToSectionByIndex]);
 
   // Handle Enter key for section navigation (when not on terminal section)
   useEffect(() => {
@@ -86,6 +82,16 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
   const handleTerminalNavigate = useCallback(() => {
     scrollToSectionByIndex(1); // Navigate to team (index 1)
   }, [scrollToSectionByIndex]);
+
+  // Handle team navigation callback
+  const handleTeamNavigate = useCallback(() => {
+    scrollToSectionByIndex(2); // Navigate to portfolio (index 2)
+  }, [scrollToSectionByIndex]);
+
+  // Handle portfolio navigation callback (go to LinkedIn)
+  const handlePortfolioNavigate = useCallback(() => {
+    window.location.href = "https://www.linkedin.com/company/drysdaleventures/about/";
+  }, []);
 
   // Update current section based on scroll position (for manual scrolling)
   useEffect(() => {
@@ -123,7 +129,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
 
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [sections]);
+  }, []);
 
   return (
     <div
@@ -153,32 +159,18 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         className="min-h-full shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <TeamSection team={team} />
+        <TeamSection team={team} onNavigate={handleTeamNavigate} />
       </div>
 
-      {/* Batch Sections - dynamically rendered */}
-      {batches.map((batch, index) => (
-        <div
-          key={batch._id}
-          ref={(el) => {
-            sectionRefs.current[`batch-${index}`] = el;
-          }}
-          className="min-h-full shrink-0"
-          style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
-        >
-          <CompaniesSection batch={batch} />
-        </div>
-      ))}
-
-      {/* Outro Section */}
+      {/* Portfolio Section (all batches + outro footer) */}
       <div
         ref={(el) => {
-          sectionRefs.current.outro = el;
+          sectionRefs.current.portfolio = el;
         }}
-        className="min-h-full shrink-0 flex flex-col"
+        className="min-h-full shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <OutroSection />
+        <PortfolioSection batches={batches} onNavigate={handlePortfolioNavigate} />
       </div>
 
 

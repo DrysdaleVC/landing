@@ -6,9 +6,10 @@ import { TypingText } from "./typing-text";
 
 type TeamSectionProps = {
   team: TeamMember[];
+  onNavigate?: () => void;
 };
 
-export function TeamSection({ team }: TeamSectionProps) {
+export function TeamSection({ team, onNavigate }: TeamSectionProps) {
   const [isInView, setIsInView] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -33,7 +34,7 @@ export function TeamSection({ team }: TeamSectionProps) {
   }, []);
 
   return (
-    <section ref={sectionRef} className="h-full w-[80%] flex flex-col py-2">
+    <section ref={sectionRef} className="h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
       <h2 className="font-mono text-xs md:text-sm text-primary mb-2 shrink-0">
         <TypingText
           lines={[
@@ -128,12 +129,22 @@ export function TeamSection({ team }: TeamSectionProps) {
         </div>
       )}
 
-      {/* Prompt to continue */}
-      <div className="font-mono text-xs md:text-sm text-primary mt-4 flex items-center">
-        <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to display portfolio...</span>
-        <span className="md:hidden">Click <span className="font-bold">HERE</span> to display portfolio...</span>
-        <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
-      </div>
+      {/* Team count and prompt to continue */}
+      {showContent && team.length > 0 && (
+        <div className="font-mono text-xs md:text-sm text-primary mt-4">
+          <p className="mb-1">{team.length} team member{team.length !== 1 ? 's' : ''} loaded.</p>
+          <div className="flex items-center">
+            <span className="hidden md:inline">Press <span className="font-bold">ENTER</span> to display portfolio...</span>
+            <button 
+              className="md:hidden text-left"
+              onClick={onNavigate}
+            >
+              Click <span className="font-bold">HERE</span> to display portfolio...
+            </button>
+            <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
