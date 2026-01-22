@@ -148,7 +148,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     return () => clearTimeout(timer);
   }, [showContent, totalCompanies]);
 
-  // As soon as outro appears, scroll down to show all the text
+  // As soon as outro appears, scroll to make it visible
   useEffect(() => {
     if (!showOutro) return;
     if (userScrolledRef.current) return;
@@ -156,11 +156,26 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     const scrollContainer = getScrollContainer();
     if (!scrollContainer) return;
 
-    // Just scroll down by 300px to ensure the outro text is fully visible
-    scrollContainer.scrollBy({
-      top: 300,
-      behavior: "smooth",
-    });
+    // Wait a tiny bit for the outro to render, then scroll to it
+    setTimeout(() => {
+      const outro = outroRef.current;
+      if (!outro) return;
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const outroRect = outro.getBoundingClientRect();
+
+      // Scroll so the outro is in the middle of the viewport
+      const outroCenter = outroRect.top + outroRect.height / 2;
+      const containerCenter = containerRect.top + containerRect.height / 2;
+      const scrollAmount = outroCenter - containerCenter;
+
+      if (scrollAmount > 0) {
+        scrollContainer.scrollBy({
+          top: scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }, 50);
   }, [showOutro, getScrollContainer]);
 
   // Scroll to LinkedIn prompt when it appears
@@ -222,16 +237,11 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
           startingIndex += batches[i].companies?.length || 0;
         }
 
+        // Calculate the ending index for this batch (for the label delay)
+        const endingIndex = startingIndex + (companies?.length || 0);
+
         return (
           <div key={batch._id} className="mb-4">
-            {/* Batch year label */}
-            <p
-              className="font-mono text-xs md:text-sm text-secondary mb-2 transition-opacity duration-150"
-              style={{ opacity: showContent ? 1 : 0, transitionDelay: showContent ? `${startingIndex * 100}ms` : "0ms" }}
-            >
-              {year} vintage: {companies?.length} companies loaded.
-            </p>
-
             {/* Companies grid */}
             <div
               className="grid grid-cols-2 md:grid-cols-4 border-l border-t border-[#333537]/20 dark:border-[#e6e6e6]/20 transition-opacity duration-150"
@@ -288,6 +298,14 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
                 );
               })}
             </div>
+
+            {/* Batch year label - appears after all logos in this batch */}
+            <p
+              className="font-mono text-xs md:text-sm text-secondary mt-2 transition-opacity duration-150"
+              style={{ opacity: showContent ? 1 : 0, transitionDelay: showContent ? `${endingIndex * 100}ms` : "0ms" }}
+            >
+              {year} vintage: {companies?.length} companies loaded.
+            </p>
           </div>
         );
       })}
