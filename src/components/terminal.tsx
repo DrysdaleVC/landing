@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import React, { useEffect, useRef, useState } from "react"
+import { cn } from "@/lib/utils";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 // Define the structure of a terminal line
 type TerminalLine = {
-  content: string
-  type: "input" | "output" | "empty"
-  color: "normal" | "bold" | "light"
-}
+  content: string;
+  type: "input" | "output" | "empty";
+  color: "normal" | "bold" | "light";
+};
 
 // Define the structure of a sequence step
 type SequenceStep =
@@ -16,13 +16,13 @@ type SequenceStep =
   | { action: "output"; content: string; delay: number; bold?: boolean }
   | { action: "empty"; count?: number; delay: number }
   | { action: "pause"; delay: number }
-  | { action: "prompt"; delay: number }
+  | { action: "prompt"; delay: number };
 
 // Typing speed and delays
-const TYPING_SPEED = 50 // ms per character
-const RESPONSE_DELAY = 500 // ms before computer responds
-const MODULE_DELAY = 300 // ms delay between module loading messages
-const COMMAND_DELAY = 1000 // ms delay before starting a new command
+const TYPING_SPEED = 50; // ms per character
+const RESPONSE_DELAY = 500; // ms before computer responds
+const MODULE_DELAY = 300; // ms delay between module loading messages
+const COMMAND_DELAY = 1000; // ms delay before starting a new command
 
 // Memoized line component to reduce re-renders
 const TerminalLineComponent = React.memo(
@@ -36,14 +36,14 @@ const TerminalLineComponent = React.memo(
     style,
     lineColor,
   }: {
-    line: TerminalLine
-    index: number
-    isLastLine: boolean
-    showCaret: boolean
-    isMobile: boolean
-    onClick?: () => void
-    style?: React.CSSProperties
-    lineColor: string
+    line: TerminalLine;
+    index: number;
+    isLastLine: boolean;
+    showCaret: boolean;
+    isMobile: boolean;
+    onClick?: () => void;
+    style?: React.CSSProperties;
+    lineColor: string;
   }) => {
     return (
       <div
@@ -55,47 +55,64 @@ const TerminalLineComponent = React.memo(
         onClick={onClick}
         style={style}
       >
-        {line.content === "Press ENTER to continue.." && isMobile ? (
-          <span className="flex flex-row items-center gap-1.5">
-            Click <span className="font-bold">here</span> to continue
-          </span>
+        {line.content === "Press ENTER to display team..." ? (
+          isMobile ? (
+            <span>
+              Click <span className="font-bold">HERE</span> to display team...
+            </span>
+          ) : (
+            <span>
+              Press <span className="font-bold">ENTER</span> to display team...
+            </span>
+          )
         ) : (
           line.content
         )}
         {isLastLine && showCaret ? <Caret /> : null}
       </div>
-    )
+    );
   }
-)
-TerminalLineComponent.displayName = "TerminalLineComponent"
+);
+TerminalLineComponent.displayName = "TerminalLineComponent";
 
-export function Terminal() {
+type TerminalProps = {
+  onNavigate?: () => void;
+  isActive?: boolean;
+};
+
+export function Terminal({ onNavigate, isActive = true }: TerminalProps) {
   // State to track the displayed lines
-  const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>([])
+  const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>([]);
   // State to track the current typing content
-  const [currentTyping, setCurrentTyping] = useState("")
+  const [currentTyping, setCurrentTyping] = useState("");
   // State to track if we're at the end with the blinking prompt
-  const [showPrompt, setShowPrompt] = useState(false)
+  const [showPrompt, setShowPrompt] = useState(false);
   // State to track the fading effect
-  const [_, setIsFading] = useState(false)
+  const [_, setIsFading] = useState(false);
   // State to track if we're on a mobile device
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false);
+  // State to track if animation is complete
+  const [animationComplete, setAnimationComplete] = useState(false);
   // Reference to the terminal container for scrolling
-  const terminalRef = useRef<HTMLDivElement>(null)
+  const terminalRef = useRef<HTMLDivElement>(null);
+  // Reference to track if we should skip animation
+  const skipAnimationRef = useRef(false);
+  // Reference to track if animation is running
+  const animationRunningRef = useRef(true);
 
   // Check if the device is mobile on mount
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.matchMedia("(max-width: 768px)").matches)
-    }
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
 
     // Check initially
-    checkMobile()
+    checkMobile();
 
     // Listen for window resize
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Define the sequence of lines to display
   const sequence: SequenceStep[] = [
@@ -154,145 +171,173 @@ export function Terminal() {
     // Third command
     {
       action: "type",
-      content: "> system_core --pre-seed round",
+      content: "> system_core --stage",
       delay: TYPING_SPEED,
     },
     { action: "pause", delay: RESPONSE_DELAY },
     {
       action: "output",
-      content: "Angel ticket validated. All permissions granted.",
+      content: "Up to €500.000 from pre-seed stage. All permissions granted.",
       delay: 0,
     },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line after permissions granted
     { action: "pause", delay: COMMAND_DELAY },
 
-    // Fourth command
-    { action: "type", content: "> halt && catch-fire", delay: TYPING_SPEED },
-    { action: "pause", delay: RESPONSE_DELAY },
+    // Prompt to continue
+    { action: "empty", count: 1, delay: 0 },
     {
       action: "output",
-      content: "Warning: Undocumented instruction detected.",
-      delay: 0,
-      bold: true,
-    },
-    { action: "pause", delay: MODULE_DELAY },
-    {
-      action: "output",
-      content: "Switching bus lines too fast may lead to overheating.",
-      delay: 0,
-    },
-    { action: "pause", delay: MODULE_DELAY },
-    { action: "empty", count: 1, delay: 0 }, // Add an empty line before the prompt
-    {
-      action: "output",
-      content: "Press ENTER to continue..",
+      content: "Press ENTER to display team...",
       delay: 0,
     },
     { action: "prompt", delay: 0 },
-  ]
+  ];
+
+  // Function to generate all final lines from the sequence
+  const generateAllLines = useCallback((): TerminalLine[] => {
+    const lines: TerminalLine[] = [];
+    for (const step of sequence) {
+      if (step.action === "type") {
+        lines.push({ content: step.content, type: "input", color: "normal" });
+      } else if (step.action === "output") {
+        lines.push({
+          content: step.content,
+          type: "output",
+          color: step.bold ? "bold" : "normal",
+        });
+      } else if (step.action === "empty") {
+        const count = step.count || 1;
+        for (let i = 0; i < count; i++) {
+          lines.push({ content: "", type: "empty", color: "normal" });
+        }
+      }
+    }
+    return lines;
+  }, []);
+
+  // Function to skip animation and show all content
+  const skipAnimation = useCallback(() => {
+    skipAnimationRef.current = true;
+    const allLines = generateAllLines();
+    setDisplayedLines(allLines);
+    setCurrentTyping("");
+    setShowPrompt(true);
+    setAnimationComplete(true);
+    animationRunningRef.current = false;
+    setTimeout(() => setIsFading(true), 100);
+  }, [generateAllLines]);
 
   // Function to run the animation sequence
   useEffect(() => {
-    let currentIndex = 0
-    let typingIndex = 0
-    let timeoutId: NodeJS.Timeout | null = null
+    let currentIndex = 0;
+    let typingIndex = 0;
+    let timeoutId: NodeJS.Timeout | null = null;
 
     // Function to process the next step in the sequence
     const processNextStep = () => {
-      if (currentIndex >= sequence.length) {
-        return
+      // Check if we should skip
+      if (skipAnimationRef.current) {
+        return;
       }
 
-      const step = sequence[currentIndex]
+      if (currentIndex >= sequence.length) {
+        return;
+      }
+
+      const step = sequence[currentIndex];
 
       if (step.action === "type") {
         // Start typing an input line character by character
-        typingIndex = 0
+        typingIndex = 0;
         const typeNextChar = () => {
+          if (skipAnimationRef.current) return;
+
           if (typingIndex < step.content.length) {
-            setCurrentTyping(step.content.substring(0, typingIndex + 1))
-            typingIndex++
-            timeoutId = setTimeout(typeNextChar, step.delay)
+            setCurrentTyping(step.content.substring(0, typingIndex + 1));
+            typingIndex++;
+            timeoutId = setTimeout(typeNextChar, step.delay);
           } else {
             // Typing complete, add the line to displayed lines
-            setDisplayedLines(prev => [
+            setDisplayedLines((prev) => [
               ...prev,
               { content: step.content, type: "input", color: "normal" },
-            ])
-            setCurrentTyping("")
-            currentIndex++
-            timeoutId = setTimeout(processNextStep, 10)
+            ]);
+            setCurrentTyping("");
+            currentIndex++;
+            timeoutId = setTimeout(processNextStep, 10);
           }
-        }
-        typeNextChar()
+        };
+        typeNextChar();
       } else if (step.action === "output") {
         // Add an output line immediately
-        setDisplayedLines(prev => [
+        setDisplayedLines((prev) => [
           ...prev,
           {
             content: step.content,
             type: "output",
             color: step.bold ? "bold" : "normal",
           },
-        ])
-        currentIndex++
-        timeoutId = setTimeout(processNextStep, step.delay)
+        ]);
+        currentIndex++;
+        timeoutId = setTimeout(processNextStep, step.delay);
       } else if (step.action === "empty") {
         // Add empty lines for spacing
-        const count = step.count || 1
+        const count = step.count || 1;
         const emptyLines = Array(count)
           .fill(null)
           .map(() => ({
             content: "",
             type: "empty" as const,
             color: "normal" as const,
-          }))
+          }));
 
-        setDisplayedLines(prev => [...prev, ...emptyLines])
-        currentIndex++
-        timeoutId = setTimeout(processNextStep, step.delay)
+        setDisplayedLines((prev) => [...prev, ...emptyLines]);
+        currentIndex++;
+        timeoutId = setTimeout(processNextStep, step.delay);
       } else if (step.action === "pause") {
         // Just pause for the specified delay
-        currentIndex++
-        timeoutId = setTimeout(processNextStep, step.delay)
+        currentIndex++;
+        timeoutId = setTimeout(processNextStep, step.delay);
       } else if (step.action === "prompt") {
         // Show the blinking prompt at the end
-        setShowPrompt(true)
-        setTimeout(() => setIsFading(true), 1000)
-        currentIndex++
+        setShowPrompt(true);
+        setAnimationComplete(true);
+        animationRunningRef.current = false;
+        setTimeout(() => setIsFading(true), 1000);
+        currentIndex++;
       }
-    }
+    };
 
     // Start the sequence after a short initial delay
-    timeoutId = setTimeout(processNextStep, 500)
+    timeoutId = setTimeout(processNextStep, 500);
 
     // Clean up on unmount
     return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, [])
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
 
   // Apply light gray color to previous command sections
   const getLineColor = (index: number, line: TerminalLine) => {
-    if (line.color === "bold") return "font-bold text-primary"
-    if (line.color === "light") return "text-secondary"
-    if (line.type === "empty") return ""
+    if (line.color === "bold") return "font-bold text-primary";
+    if (line.color === "light") return "text-secondary";
+    if (line.type === "empty") return "";
 
     // Find the indices where commands start
     const commandIndices = displayedLines
       .map((l, i) => (l.type === "input" && l.content.startsWith(">") ? i : -1))
-      .filter(i => i !== -1)
+      .filter((i) => i !== -1);
 
     // Find the next command after this line
-    const nextCommandIndex = commandIndices.find(cmdIdx => cmdIdx > index)
+    const nextCommandIndex = commandIndices.find((cmdIdx) => cmdIdx > index);
 
     // If there's a command after this line and this line is before it, make it light
     if (nextCommandIndex !== undefined) {
-      return "text-secondary"
+      return "text-secondary";
     }
 
-    return "text-primary"
-  }
+    return "text-primary";
+  };
 
   // Auto-scroll to the bottom of the terminal - optimize with a more performant approach
   useEffect(() => {
@@ -300,30 +345,47 @@ export function Terminal() {
       // Use requestAnimationFrame to optimize scrolling performance
       requestAnimationFrame(() => {
         if (terminalRef.current) {
-          terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+          terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
         }
-      })
+      });
     }
-  }, [displayedLines, currentTyping, showPrompt])
+  }, [displayedLines, currentTyping, showPrompt]);
 
-  function navigateToLinkedIn() {
-    window.open(
-      "https://www.linkedin.com/company/drysdaleventures/about/",
-      "_blank"
-    )
-  }
+  // Handle navigation
+  const handleNavigate = useCallback(() => {
+    if (onNavigate) {
+      onNavigate();
+    }
+  }, [onNavigate]);
 
-  // Handle Enter key press to navigate to LinkedIn
+  // Handle Enter key press - only when terminal is the active section
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && showPrompt) {
-        navigateToLinkedIn()
-      }
-    }
+    if (!isActive) return;
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [showPrompt])
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        if (!animationComplete && animationRunningRef.current) {
+          // Animation is still running, skip it
+          skipAnimation();
+        } else if (animationComplete) {
+          // Animation is complete, navigate to next section
+          handleNavigate();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isActive, animationComplete, skipAnimation, handleNavigate]);
+
+  // Handle click on "Press ENTER to display team..."
+  const handleContinueClick = useCallback(() => {
+    if (!animationComplete) {
+      skipAnimation();
+    } else {
+      handleNavigate();
+    }
+  }, [animationComplete, skipAnimation, handleNavigate]);
 
   return (
     <div className="relative h-full will-change-contents">
@@ -345,19 +407,19 @@ export function Terminal() {
             isLastLine={
               index === displayedLines.length - 1 &&
               line.type === "output" &&
-              (line.content === "Press ENTER to continue.." ||
-                (isMobile && line.content === "Click here to continue"))
+              (line.content === "Press ENTER to display team..." ||
+                (isMobile && line.content === "Click here to display team..."))
             }
-            showCaret={true}
+            showCaret={showPrompt}
             isMobile={isMobile}
             lineColor={getLineColor(index, line)}
             onClick={
-              line.content === "Press ENTER to continue.." && isMobile
-                ? navigateToLinkedIn
+              line.content === "Press ENTER to display team..."
+                ? handleContinueClick
                 : undefined
             }
             style={
-              line.content === "Press ENTER to continue.." && isMobile
+              line.content === "Press ENTER to display team..."
                 ? { cursor: "pointer" }
                 : undefined
             }
@@ -373,11 +435,11 @@ export function Terminal() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function Caret() {
   return (
     <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-200 ml-1 animate-blink" />
-  )
+  );
 }
