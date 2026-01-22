@@ -148,35 +148,22 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     return () => clearTimeout(timer);
   }, [showContent, totalCompanies]);
 
-  // As soon as outro appears, scroll to make it visible
+  // As soon as outro appears, scroll to show it
   useEffect(() => {
     if (!showOutro) return;
     if (userScrolledRef.current) return;
 
-    const scrollContainer = getScrollContainer();
-    if (!scrollContainer) return;
-
-    // Wait a tiny bit for the outro to render, then scroll to it
+    // Use scrollIntoView to bring the outro into view
     setTimeout(() => {
       const outro = outroRef.current;
       if (!outro) return;
 
-      const containerRect = scrollContainer.getBoundingClientRect();
-      const outroRect = outro.getBoundingClientRect();
-
-      // Scroll so the outro is in the middle of the viewport
-      const outroCenter = outroRect.top + outroRect.height / 2;
-      const containerCenter = containerRect.top + containerRect.height / 2;
-      const scrollAmount = outroCenter - containerCenter;
-
-      if (scrollAmount > 0) {
-        scrollContainer.scrollBy({
-          top: scrollAmount,
-          behavior: "smooth",
-        });
-      }
+      outro.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }, 50);
-  }, [showOutro, getScrollContainer]);
+  }, [showOutro]);
 
   // Scroll to LinkedIn prompt when it appears
   useEffect(() => {
