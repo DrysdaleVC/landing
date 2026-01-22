@@ -153,14 +153,14 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     if (!showOutro) return;
     if (userScrolledRef.current) return;
 
-    // Use scrollIntoView to bring the outro into view
+    // Use scrollIntoView to bring the outro into view - use "start" to leave room for the prompt
     setTimeout(() => {
       const outro = outroRef.current;
       if (!outro) return;
 
       outro.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: "start",
       });
     }, 50);
   }, [showOutro]);
@@ -168,37 +168,19 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
   // Scroll to LinkedIn prompt when it appears
   useEffect(() => {
     if (!showLinkedInPrompt) return;
+    if (userScrolledRef.current) return;
 
-    const scrollContainer = getScrollContainer();
-    if (!scrollContainer) return;
+    const prompt = linkedInPromptRef.current;
+    if (!prompt) return;
 
-    const scrollToPrompt = () => {
-      if (userScrolledRef.current) return;
-
-      const prompt = linkedInPromptRef.current;
-      if (!prompt) return;
-
-      const containerRect = scrollContainer.getBoundingClientRect();
-      const promptRect = prompt.getBoundingClientRect();
-
-      if (promptRect.bottom > containerRect.bottom - 20) {
-        const scrollAmount = promptRect.bottom - containerRect.bottom + 80;
-        scrollContainer.scrollBy({
-          top: scrollAmount,
-          behavior: "smooth",
-        });
-      }
-    };
-
-    // Try multiple times
-    const timer1 = setTimeout(scrollToPrompt, 100);
-    const timer2 = setTimeout(scrollToPrompt, 500);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [showLinkedInPrompt, getScrollContainer]);
+    // Use scrollIntoView to ensure the prompt is visible
+    setTimeout(() => {
+      prompt.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+  }, [showLinkedInPrompt]);
 
   return (
     <section ref={sectionRef} className="min-h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
