@@ -17,9 +17,9 @@ const sections = ["terminal", "team", "portfolio"];
 export function ScreenContent({ team, batches }: ScreenContentProps) {
 
   const [currentSection, setCurrentSection] = useState<string>("terminal");
+  const [snapEnabled, setSnapEnabled] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  // Track current index with a ref for reliable navigation
   const currentIndexRef = useRef(0);
 
   // Scroll to a specific section by index
@@ -136,7 +136,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
       ref={containerRef}
       className="flex-1 overflow-y-auto scroll-smooth scrollbar-thin"
       style={{
-        scrollSnapType: "y mandatory",
+        scrollSnapType: snapEnabled ? "y mandatory" : "none",
         scrollBehavior: "smooth",
       }}
     >
@@ -159,7 +159,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         className="min-h-full shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <TeamSection team={team} onNavigate={handleTeamNavigate} />
+        <TeamSection team={team} onNavigate={handleTeamNavigate} onSnapToggle={setSnapEnabled} />
       </div>
 
       {/* Portfolio Section (all batches + outro footer) */}
@@ -170,7 +170,7 @@ export function ScreenContent({ team, batches }: ScreenContentProps) {
         className="min-h-full shrink-0"
         style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
       >
-        <PortfolioSection batches={batches} onNavigate={handlePortfolioNavigate} />
+        <PortfolioSection batches={batches} onNavigate={handlePortfolioNavigate} onSnapToggle={setSnapEnabled} />
       </div>
 
 

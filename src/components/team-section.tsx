@@ -7,9 +7,10 @@ import { TypingText } from "./typing-text";
 type TeamSectionProps = {
   team: TeamMember[];
   onNavigate?: () => void;
+  onSnapToggle?: (enabled: boolean) => void;
 };
 
-export function TeamSection({ team, onNavigate }: TeamSectionProps) {
+export function TeamSection({ team, onNavigate, onSnapToggle }: TeamSectionProps) {
   const [isInView, setIsInView] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -58,10 +59,12 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     };
 
     window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchstart", handleUserScroll, { passive: true });
     window.addEventListener("touchmove", handleUserScroll, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleUserScroll);
+      window.removeEventListener("touchstart", handleUserScroll);
       window.removeEventListener("touchmove", handleUserScroll);
     };
   }, [showContent]);
@@ -74,8 +77,8 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     if (!scrollContainer) return;
 
     userScrolledRef.current = false;
+    onSnapToggle?.(false);
 
-    // Scroll to each item as it appears
     const timers: NodeJS.Timeout[] = [];
 
     team.forEach((_, index) => {
@@ -88,7 +91,6 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
         const containerRect = scrollContainer.getBoundingClientRect();
         const itemRect = item.getBoundingClientRect();
 
-        // Check if item is below the visible area
         if (itemRect.bottom > containerRect.bottom) {
           const scrollAmount = itemRect.bottom - containerRect.bottom + 20;
           scrollContainer.scrollBy({
@@ -101,17 +103,22 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
       timers.push(timer);
     });
 
-    // Final scroll to show footer - scroll just enough to make it visible, not to the top
+    // Final scroll to show footer, then re-enable snap
     const footerTimer = setTimeout(() => {
-      if (userScrolledRef.current) return;
+      if (userScrolledRef.current) {
+        onSnapToggle?.(true);
+        return;
+      }
 
       const footer = footerRef.current;
-      if (!footer) return;
+      if (!footer) {
+        onSnapToggle?.(true);
+        return;
+      }
 
       const containerRect = scrollContainer.getBoundingClientRect();
       const footerRect = footer.getBoundingClientRect();
 
-      // Only scroll if footer is below the visible area - scroll just enough to show it
       if (footerRect.bottom > containerRect.bottom) {
         const scrollAmount = footerRect.bottom - containerRect.bottom + 40;
         scrollContainer.scrollBy({
@@ -119,6 +126,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
           behavior: "smooth",
         });
       }
+      setTimeout(() => onSnapToggle?.(true), 600);
     }, team.length * 100 + 400);
 
     timers.push(footerTimer);
@@ -126,7 +134,7 @@ export function TeamSection({ team, onNavigate }: TeamSectionProps) {
     return () => {
       timers.forEach(clearTimeout);
     };
-  }, [showContent, team.length, getScrollContainer]);
+  }, [showContent, team.length, getScrollContainer, onSnapToggle]);
 
   return (
     <section ref={sectionRef} className="h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">

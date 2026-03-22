@@ -142,13 +142,13 @@ export function Terminal({ onNavigate, isActive = true }: TerminalProps) {
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "'fintech-and-defi' loaded.",
+      content: "'business-solutions' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "'infra-and-tooling' loaded.",
+      content: "'fintech-and-CFO-office' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
@@ -160,12 +160,13 @@ export function Terminal({ onNavigate, isActive = true }: TerminalProps) {
     { action: "pause", delay: MODULE_DELAY },
     {
       action: "output",
-      content: "'business-solutions' loaded.",
+      content: "'tech-for-engineering' loaded.",
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
+    { action: "output", content: "'robotics' loaded.", delay: MODULE_DELAY },
+    { action: "empty", count: 1, delay: 0 }, // Add an empty line after robotics loaded
     { action: "output", content: "AI capabilities integrated.", delay: 0 },
-    { action: "empty", count: 1, delay: 0 }, // Add an empty line after modules loaded
     { action: "pause", delay: COMMAND_DELAY },
 
     // Third command

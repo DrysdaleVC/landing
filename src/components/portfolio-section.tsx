@@ -7,9 +7,10 @@ import { TypingText } from "./typing-text";
 type PortfolioSectionProps = {
   batches: Batch[];
   onNavigate?: () => void;
+  onSnapToggle?: (enabled: boolean) => void;
 };
 
-export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps) {
+export function PortfolioSection({ batches, onNavigate, onSnapToggle }: PortfolioSectionProps) {
   const [isInView, setIsInView] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [showOutro, setShowOutro] = useState(false);
@@ -84,10 +85,12 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     };
 
     window.addEventListener("wheel", handleUserScroll, { passive: true });
+    window.addEventListener("touchstart", handleUserScroll, { passive: true });
     window.addEventListener("touchmove", handleUserScroll, { passive: true });
 
     return () => {
       window.removeEventListener("wheel", handleUserScroll);
+      window.removeEventListener("touchstart", handleUserScroll);
       window.removeEventListener("touchmove", handleUserScroll);
     };
   }, [showContent]);
@@ -100,6 +103,7 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     if (!scrollContainer) return;
 
     userScrolledRef.current = false;
+    onSnapToggle?.(false);
 
     // Scroll to each item as it appears
     const timers: NodeJS.Timeout[] = [];
@@ -165,22 +169,27 @@ export function PortfolioSection({ batches, onNavigate }: PortfolioSectionProps)
     }, 50);
   }, [showOutro]);
 
-  // Scroll to LinkedIn prompt when it appears
+  // Scroll to LinkedIn prompt when it appears, then re-enable snap
   useEffect(() => {
     if (!showLinkedInPrompt) return;
-    if (userScrolledRef.current) return;
+
+    if (userScrolledRef.current) {
+      onSnapToggle?.(true);
+      return;
+    }
 
     const prompt = linkedInPromptRef.current;
     if (!prompt) return;
 
-    // Use scrollIntoView to ensure the prompt is visible
     setTimeout(() => {
       prompt.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
+      // Re-enable snap after the smooth scroll has time to finish
+      setTimeout(() => onSnapToggle?.(true), 600);
     }, 100);
-  }, [showLinkedInPrompt]);
+  }, [showLinkedInPrompt, onSnapToggle]);
 
   return (
     <section ref={sectionRef} className="min-h-full w-full px-4 md:px-0 md:w-[80%] flex flex-col py-2">
