@@ -164,7 +164,7 @@ export function Terminal({ onNavigate, isActive = true }: TerminalProps) {
       delay: MODULE_DELAY,
     },
     { action: "pause", delay: MODULE_DELAY },
-    { action: "output", content: "'robotics' loaded.", delay: MODULE_DELAY },
+    { action: "output", content: "'robotics & hardware' loaded.", delay: MODULE_DELAY },
     { action: "empty", count: 1, delay: 0 }, // Add an empty line after robotics loaded
     { action: "output", content: "AI capabilities integrated.", delay: 0 },
     { action: "pause", delay: COMMAND_DELAY },

@@ -64,7 +64,7 @@ const companyQuery = `*[_type == "company"] {
   linkedinUrl
 }`;
 
-const batchQuery = `*[_type == "batch"] | order(year desc) {
+const batchQuery = `*[_type == "batch"] | order(year asc) {
   _id,
   year,
   companies[]-> {
